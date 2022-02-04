@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Главная
+{% endblock title %}
+
+{% block main %}
+    <div class="stories-st-theme-div">
+        <div class="stories-theme-div">
+            <h4 class="stories-theme">
+            {% if q %}
+            Поиск
+            {% else %}
+            Новое
+            {% endif %}
+            </h4>
+            {% include "../includes/search.html" %}
+        </div>
+        <div class="stories">
+        {% for story in story_list %}
+            {% include "../includes/story.html" %}
+        {% endfor %}
+        </div>
+        {% include '../includes/pagination.html' %}
+    </div>
+    {% include "../includes/side_bar.html" %}
+{% endblock main %}

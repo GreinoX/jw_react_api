@@ -1,0 +1,29 @@
+{% extends '../base/base.html' %}
+
+{% block title %}
+    {% if story_list %}
+        {{ story_list.first.category.title }}
+    {% else %}
+        Извините, но тут ничего нет
+    {% endif %}
+{% endblock title %}
+
+{% block main %}
+    <div class="stories-st-theme-div">
+        <div class="stories-theme-div">
+            <h4 class="stories-theme">    
+            {% if story_list %}
+                {{ story_list.first.category.title }}
+            {% else %}
+                Станьте первым, кто напишет историю в таком жанре.
+            {% endif %}</h4>
+        </div>
+        <div class="stories">
+        {% for story in story_list %}
+            {% include "../includes/story.html" %}
+        {% endfor %}
+        </div>
+        {% include '../includes/pagination.html' %}
+    </div>
+    {% include "../includes/side_bar.html" %}
+{% endblock main %}

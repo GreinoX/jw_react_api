@@ -1,0 +1,7 @@
+{% load static %}
+<form class="search-form" action="{% url 'stories-list-by-search' %}" method="GET">
+    <button class="search-button" type="submit">
+        <img src="{% static 'icons/search.svg' %}" class="search-button-image" alt="">
+    </button>
+    <input type="text" placeholder="Найти что-нибудь" class="search-input" name="q">
+</form>

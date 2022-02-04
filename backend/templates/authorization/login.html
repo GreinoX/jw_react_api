@@ -1,0 +1,41 @@
+{% extends '../base/base_auth.html' %}
+{% load static %}
+
+{% block title %}
+Авторизация
+{% endblock title %}
+
+
+{% block main %}
+<form method="POST" class="auth-form">
+    {% csrf_token %}
+    <div class="auth-form-logo-div">
+        <a href="{% url 'story-index' %}"><img src="{% static 'icons/write.svg' %}" alt="" class="auth-form-logo"></a>
+    </div>
+    <div class="auth-form-inputs">
+        <h1 class="auth-form-header">Авторизация</h1>
+        <p class="auth-form-error">{{ form.non_field_errors }}</p>
+        {% for f in form %}
+            {{f}}
+        {% endfor %}
+        <label for="" class="auth-form-show-pass"><input type="checkbox" class="showPassword"> Показать пароль</label>
+        <input type="submit" value="Войти" class="auth-form-enter">
+        <span class="auth-form-reg">Если у вас еще нет аккаунта <a href="{% url 'story-reg-view' %}">Регистрация</a></span>
+    </div>
+</form>
+<script>
+let showPassword = document.querySelectorAll('.showPassword')
+function toggleType(){
+    let input = this.closest('.auth-form-inputs').querySelector('.password');
+    if(input.type === "password"){
+        input.type = "text";
+    }else{
+        input.type = "password"
+    }
+}
+
+showPassword.forEach(item => item.addEventListener('click', toggleType));
+
+</script>
+{% endblock main %}
+

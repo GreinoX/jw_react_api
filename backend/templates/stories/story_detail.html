@@ -1,0 +1,40 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+
+{% block title %}
+    {{ story.title }}
+{% endblock title %}
+
+{% block main %}
+    <div class="story-detail-div">
+        <div class="story-header-div" 
+            style="background-image: url({{ story.image.url }});">
+            <div class="story-header-black"></div>
+            <div class="story-header-category-div">
+                <a href="{{ story.category.get_absolute_url }}" class="story-header-category">{{ story.category }}</a>
+            </div>
+            <div class="story-header-rating-views-div">
+                <span class="story-header-rating"><img src="{% static 'icons/minimalistic_like.svg' %}" class="story-header-rating-image"> {{ story.formatted_r_full }}</span>
+                <span class="story-header-views"><img src="{% static 'icons/views.svg' %}" class="story-header-views-image"> {{ story.formatted_v_full }}</span>
+            </div>
+            <div class="story-header-title-div">
+                <h3 class="story-header-title">{{ story.title }}</h3>
+            {% if story.shortinfo %}
+                <p class="story-header-slogan">{{ story.shortinfo }}</p>
+            {% endif %}
+            </div>
+        </div>
+        {% if story.creator.username == user.username %}
+        <div class="story-creator-actions-div">
+            <a href="{% url 'story-edit-view' story.url %}" class="menu-link enter edit-button">Изменить</a>
+            <a href="{% url 'story-delete' story.url %}" class="menu-link enter delete-button">Удалить</a>
+        </div>
+        <br>
+        {% endif %}
+
+        <div class="story-detail-text">{{ story.text|safe }}</div>
+    </div>    
+    {% include "../includes/side_bar.html" %}
+{% endblock main %}
+

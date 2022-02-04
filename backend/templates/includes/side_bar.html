@@ -1,0 +1,23 @@
+<div class="side-bar-div">
+    <div class="stories-theme-div">
+        <h4 class="stories-theme">Жанры</h4>
+    </div>
+    <div class="side-bar">
+        {% for category in categories %}
+            <a href="{{ category.get_absolute_url }}" class="side-bar-category {% if category.id == category_selected.first.id %}
+            category-active
+            {% endif %}
+            ">{{ category.title }}</a>
+        {% endfor %}
+    </div>
+    <hr>
+    <div class="stories-noi-div">
+        <div class="stories-noi-theme-div">
+            <p class="stories-noi-theme">Тоже что-то новенькое</p>
+        </div>
+        {% for story_noi in story_list_no_image %}
+            {% include "../includes/story_no_image.html" %}            
+        {% endfor %}
+    <hr>
+    </div>
+</div>

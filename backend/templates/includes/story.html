@@ -1,0 +1,29 @@
+{% load static %}
+<div class="story" style="background-image: url(
+    {% if story.image %}
+        {{ story.image.url }}
+    {% endif %}
+);
+{% if story.has_image == False %}
+    border: 1px solid #A5A5A5;
+{% endif %}
+">
+    <a href="{{ story.get_absolute_url }}">
+        <div class="black" style="
+        {% if story.has_image == False %}opacity:0;{% endif %}
+        "></div>
+        <div class="story-category-div">
+            <a href="{{ story.category.get_absolute_url }}" class="story-category">{{ story.category.title }}</a>
+        </div>
+        <div class="story-rating-views-div">
+            <span class="story-rating"><img src="{% static 'icons/minimalistic_like.svg' %}" alt="" class="story-rating-image"> {{ story.formatted_rating }}</span>
+            <span class="story-views"><img src="{% static 'icons/views.svg' %}" alt="" class="story-views-image">{{ story.formatted_views }}</span>
+        </div>
+        <div class="story-title-div">
+            <h3 class="story-title">{{ story.title }}</h3>
+            {% if story.shortinfo %}
+            <p class="story-slogan">{{ story.shortinfo }}</p>
+            {% endif %}
+        </div>
+    </a>
+</div>

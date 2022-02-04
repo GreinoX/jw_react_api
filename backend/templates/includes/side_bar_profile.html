@@ -1,0 +1,93 @@
+<div class="side-bar-profile-div">
+    <div class="stories-theme-div">
+        <h4 class="stories-theme">Профиль</h4>
+    </div>
+    <div class="profile">
+        <div class="profile-image-div">
+            <img src="{{ user_info.get_profile_picture }}" class="profile-image" alt="">
+        </div>
+
+        <div class="profile-header-div">
+        
+            <div class="profil-header-name-div">
+                <h4 class="profile-header-name">
+                    {% if user_info.last_name or user_info.first_name %}
+                        {{user_info.first_name}} {{ user_info.last_name }}
+                    {% else %}
+                        {{user_info.username}}
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="profile-header-rank">
+                {% if user_info.status %}
+                <p class="profile-header-rank">Звание:{% if user_info.username == "GreinoX" %} <span>{{ user_info.get_status_display }}</span> {% else %} {{ user_info.get_status_display }} {% endif %}</p>
+                {% endif %}
+                <div class="profile-mini-info-div">
+                    <div class="profile-counters-div">
+                        <p class="profile-count">
+                        {{ user_posts_count }} <br>
+                        Историй
+                        </p>
+                    </div>
+                    <div class="profile-counters-div">
+                        <p class="profile-count">
+                        {{ user_info.profile_rating }} <br>
+                        Рейтинг
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% if user.username == user_info.username %}
+            <div class="profile-actions-div">
+                <a href="{{user_info.get_absolute_edit_url}}" class="profile-edit">Изменить профиль</a>
+                <a href="{% url 'story-create-view' %}" class="profile-edit">Создать историю</a>
+                <a href="{% url 'logout' %}" class="profile-logout">Выйти</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% comment %} <div class="profile">
+        <div class="profile-image-div">
+            <img src="{{ user.userprofile.profile_picture }}" class="profile-image" alt="">
+        </div>
+    
+        <div class="profile-header-div">
+        
+            <div class="profil-header-name-div">
+                <h4 class="profile-header-name">
+                    {% if user.last_name or user.first_name %}
+                        {{user.first_name}} {{ user.last_name }}
+                    {% else %}
+                        {{user.username}}
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="profile-header-rank">
+                <p class="profile-header-rank">Звание:{% if user.username == "GreinoX" %} <span>Создатель</span> {% else %} Автор {% endif %}</p>
+                <div class="profile-mini-info-div">
+                    <div class="profile-counters-div">
+                        <p class="profile-count">
+                        {{ user_posts_count }} <br>
+                        Историй
+                        </p>
+                    </div>
+                    <div class="profile-counters-div">
+                        <p class="profile-count">
+                        0 <br>
+                        Рейтинг
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% if user.username == user.username %}
+            <div class="profile-actions-div">
+                <a href="" class="profile-edit">Изменить профиль</a>
+                <a href="{% url 'story-create-view' %}" class="profile-edit">Создать историю</a>
+                <a href="{% url 'logout' %}" class="profile-logout">Выйти</a>
+            </div>
+            {% endif %}
+        </div>
+    </div> {% endcomment %}
+
+
+</div>

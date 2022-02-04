@@ -1,0 +1,56 @@
+{% extends '../base/base.html' %}
+
+{% block title %}
+Изменение истории...
+{% endblock title %}
+
+{% block main %}
+{% if not 404_object %}
+{{404_object}}
+
+<div class="story-create-div">
+    <form action="" method="POST" class="story-create-form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="stories-theme-div">
+            <h4 class="stories-theme">
+                Изменение истории...
+            </h4>
+        </div>
+        <div class="story-create-field">
+            <div class="story-create-title-slogan-div">
+                <div class="story-create-title-div input-blocks">
+                    <label for="{{ form.title.id_for_label }}" class="story-create-labels">{{ form.title.label }}</label>
+                    {{ form.title }}
+                </div>
+                <div class="story-create-slogan-div input-blocks">
+                    <label for="{{ form.shortinfo.id_for_label }}" class="story-create-labels">{{ form.shortinfo.label }}</label>
+                    {{ form.shortinfo }}
+                </div>
+            </div>
+            <br>
+            <div class="story-create-text-div input-blocks">
+                {{form.media}}
+                <label for="{{ form.text.id_for_label }}" class="story-create-labels">{{ form.text.label }}</label>
+                {{ form.text }}
+            </div>
+            <br>
+            <div class="story-create-title-slogan-div">
+                <div class="story-create-image-div input-blocks">
+                    <label for="{{ form.image.id_for_label }}" class="story-create-labels">{{ form.image.label }}</label>
+                    {{ form.image }}
+                </div>
+                <div class="story-create-category-div input-blocks">
+                    <label for="{{ form.category.id_for_label }}" class="story-create-labels">{{ form.category.label }}</label>
+                    {{ form.category }}
+                </div>
+            </div>
+            <br>
+            <div class="story-create-btn-div">
+                <input type="submit" name="submit" value="Изменить" class="create-btn auth-form-enter">
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+
+{% endblock main %}

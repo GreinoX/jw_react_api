@@ -1,0 +1,32 @@
+{% extends '../base/base.html' %}
+
+
+{% block title %}
+    {{user_info.username}}
+{% endblock title %}
+
+
+{% block main %}
+    {% comment %} {% with user_list.first as user_info %} {% endcomment %}
+    {% include "../includes/side_bar_profile.html" %}
+    <div class="stories-st-theme-div">
+        <div class="stories-theme-div">
+            <h4 class="stories-theme">
+                {% if user.username == user_info.username %}
+                Ваши истории
+                {% else %}
+                Истории пользователя <span>{{ user_info.username }}</span>
+                {% endif %}
+            </h4>
+        </div>
+        <div class="stories">
+        {% for story in user_posts %}
+            {% include "../includes/story.html" %}
+        {% endfor %}
+        <br>
+        </div>
+        {% include '../includes/pagination.html' %}
+    </div>
+    {% comment %} {% endwith %} {% endcomment %}
+{% endblock main %}
+

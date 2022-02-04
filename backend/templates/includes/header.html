@@ -1,0 +1,23 @@
+{% load static %}
+<header>
+    <div class="header-div">
+        <div class="header-logo-div">
+            <a href="{% url 'story-index' %}" class="header-logo">ПростоПиши</a>
+        </div>
+        <div class="menu-div">
+            <a href="" class="menu-link">Истории</a>
+            <a href="" class="menu-link">Рецензии</a>
+            <a href="" class="menu-link">Инфо</a>
+            {% if user.is_authenticated %}
+            <a href="{{ user.get_absolute_url }}" class="menu-link">
+                <div class="header-profile-div">
+                    <img src="{{ user.get_profile_picture }}" class="header-profile-image" alt="">
+                </div>
+            </a>
+            {% else %}
+            <a href="{% url 'story-login-view' %}" class="menu-link enter">Войти</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+<hr>

@@ -1,0 +1,10 @@
+{% load static %}
+<div class="story-noi-div">
+    <a href="{{ story_noi.get_absolute_url }}" class="story-noi-title">{{ story_noi.title }}</a>
+    <div class="story-noi-rating-views-div">
+        <span class="story-noi-rating"><img src="{% static 'icons/minimalistic_like.svg' %}" class="story-noi-rating-image"> {{ story_noi.formatted_rating }}</span>
+        <span>&#8226;</span>
+        <span class="story-noi-views">
+        <img src="{% static 'icons/views.svg' %}" class="story-noi-views-image"> {{ story_noi.formatted_views }}</span>
+    </div>
+</div>
