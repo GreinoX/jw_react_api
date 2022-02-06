@@ -3,12 +3,12 @@ html, body{
   padding: 0;
   background-color: #1A1A1D;
   position: relative;
-  min-height: 100vh;
 }
 
 #root{
-  position:relative;
-  height: 100%;
+  position: relative;
+  min-height: 100vh;
+  padding: 0;
 }
 
 a{
@@ -80,7 +80,7 @@ hr{
 .main{
   margin-top: 40px;
   display: flex;
-  padding-bottom: 400px;
+  padding-bottom: 270px;
 }
 
 .search-link{
@@ -718,11 +718,9 @@ hr{
   color: #A5A5A5;
 }
 
-.errorlist{
-  font-size: 13px;
-  color: #BE0000;
-  list-style-type: none;
-  padding: 0;
+.errors{
+  font-size: 14px;
+  color: crimson;
 }
 
 

@@ -4,14 +4,15 @@ import Like from '../../static/icons/minimalistic_like.svg';
 import View from '../../static/icons/views.svg';
 import {Link} from 'react-router-dom';
 import SideBar from './SideBar';
-
+import { useScrollToTop } from '../utils';
 
 function Story() {
     const {url_id} = useParams();
     const [post, setPost] = useState([]);
     const [category, setCategory] = useState([]);
 
-
+    useScrollToTop();
+    
     useEffect(() => {
         const fetchData = async () => {
             try{
@@ -30,7 +31,7 @@ function Story() {
     };
 
   return (
-    <div className="main">
+      <>
         <div className="story-detail-div" key={post.id}>
             <div className="story-header-div" style={styleForHeader} >
                 <div className="story-header-black"></div>
@@ -57,7 +58,7 @@ function Story() {
             </div>
         </div>
         <SideBar />
-    </div>
+    </>
   );
 }
 

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import SideBar from './Layout/SideBar'
-import Like from '../static/icons/minimalistic_like.svg'
-import View from '../static/icons/views.svg'
+import SideBar from './Layout/SideBar';
+import Like from '../static/icons/minimalistic_like.svg';
+import View from '../static/icons/views.svg';
 import {Link} from 'react-router-dom';
-import {formatIntegers, imageForStory} from './utils'
+import {formatIntegers, imageForStory} from './utils';
 
 class MainContent extends Component {
     constructor(props){

@@ -30,3 +30,9 @@ class StoryDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Story
         exclude = ('draft', 'url', )
+
+class ProfileDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Profile
+        fields = ("username", "profile_picture", "profile_url", "status", )

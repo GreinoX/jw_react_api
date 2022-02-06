@@ -3,6 +3,7 @@ import React from 'react';
 export default function Footer() {
   return (
       <div className="footer">
+        <hr />
           <div className="header-div footer-div">
             <div className="footer-logo-div">
                 <a href="/" className="header-logo">ПростоПиши</a>

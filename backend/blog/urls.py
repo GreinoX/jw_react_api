@@ -9,4 +9,7 @@ urlpatterns = [
     path('story/<slug:url>', StoryDetailView.as_view(), name='story-detail'),
     path('categories/', CategoryListView.as_view(), name='categories-list'),
     path('category/<slug:url>', StoryListByCategoryView.as_view(), name='story-list-by-category-view'),
+    path('profileData/<username>', ProfileDetailView.as_view()),
+    path('profileStories/<username>', StoryListByProfileView.as_view())
+    
 ]

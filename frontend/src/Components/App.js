@@ -8,7 +8,8 @@ import Stories from './Layout/Stories';
 import {Routes, Route } from 'react-router-dom';
 import Story from './Layout/Story';
 import Authentication from './Layout/Authentication';
-
+import Registration from './Layout/Registration';
+import Profile from './Layout/Profile';
 
 class App extends Component {
 
@@ -16,15 +17,17 @@ class App extends Component {
     return (
     <>
     <Header />
-    <Routes>
-      <Route path="/" element={<MainContent/>} exact>
+    <div className="main">
+      <Routes>
+        <Route path="/" element={<MainContent/>} exact />
         <Route path="/quotes" element={<Stories/>} />
         <Route path="/story/:url_id" element={<Story/>}/>
         <Route path="/category/:url_id" element={<MainContentByCategory/>}/>
-      </Route>
-      <Route path="/auth" element={<Authentication/>}/>
-    </Routes>
-    <hr />
+        <Route path="/login/" element={<Authentication/>}/>
+        <Route path="/registration/" element={<Registration/>}/>
+        <Route path="/profile/:username" element={<Profile/>} />
+      </Routes>
+    </div>
     <Footer />
     </>
     )
