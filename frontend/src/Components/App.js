@@ -10,6 +10,9 @@ import Story from './Layout/Story';
 import Authentication from './Layout/Authentication';
 import Registration from './Layout/Registration';
 import Profile from './Layout/Profile';
+import CreateStory from './Layout/CreateStory';
+import EditProfile from './Layout/EditProfile';
+
 
 class App extends Component {
 
@@ -26,6 +29,8 @@ class App extends Component {
         <Route path="/login/" element={<Authentication/>}/>
         <Route path="/registration/" element={<Registration/>}/>
         <Route path="/profile/:username" element={<Profile/>} />
+        <Route path="/story/create/" exact element={<CreateStory/>} />
+        <Route path="/profile/edit/" exact element={<EditProfile/>}/>
       </Routes>
     </div>
     <Footer />

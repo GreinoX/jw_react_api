@@ -746,6 +746,61 @@ hr{
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+
+.profile-image-div:hover .image-edit-invite{
+  opacity: 1;
+}
+
+.image-edit-invite{
+  transition: .1s ease-in-out;
+  opacity: 0;
+  font-weight: 100;
+  position: absolute;
+  background-color: #09090a98;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #C98949;
+}
+
+.image-edit-add{
+  transition: .1s ease-in-out;
+  font-size: 45px;
+  width: 60px;
+  height: 60px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #121214;
+}
+
+.image-edit-remove{
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 30px;
+  padding-right: 10px;
+  z-index: 10;
+}
+
+.image-edit-remove:after{
+  padding: 0px;
+  margin: 0px;
+  display: inline-block;
+  content: "\00d7"; /* This will render the 'X' */
+  color: #afafaf;
+  z-index: 10;
+}
+
+.image-edit-remove:hover:after{
+  color: #ffffff;
+  z-index: 10;
+  cursor: default;
 }
 
 .profile-image{
@@ -877,6 +932,28 @@ hr{
 .story-create-image{
   color: #A5A5A5;
   width: 400px;
+}
+
+.story-create-image-div{
+  width: 400px;
+}
+
+.image-now{
+  width: 250px;
+  border-radius: 5px;
+}
+
+.future-image-div{
+  margin-right: 20px;
+}
+
+.future-images-div{
+  display: flex;
+}
+
+.file-label{
+  width: 210px;
+  z-index: 1;
 }
 
 #id_status{

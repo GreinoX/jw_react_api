@@ -1,42 +1,43 @@
 import React, {useEffect, useState} from 'react';
-import {useParams, Link} from 'react-router-dom';
+import {useParams, Link, useNavigate} from 'react-router-dom';
 import {formatIntegers, imageForStory} from '../utils';
 import Like from '../../static/icons/minimalistic_like.svg';
 import View from '../../static/icons/views.svg';
+import jwt from 'jwt-decode';
 
 
 function Profile() {
     const [stories, setStories] = useState([]);
-    const isLogin = JSON.parse(localStorage.getItem('isLogin'));
-    const profile = JSON.parse(localStorage.getItem('profile'));
+    const [profile, setProfile] = useState({});
+    const {username} = useParams();
+    const [jwtDecode, setJwtDecode] = useState({});
+    const navigate = useNavigate();
+    const isLogin = localStorage.getItem('isLogin');
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if(isLogin){
-            console.log('Okay')
-            const profile = JSON.parse(localStorage.getItem('profile'));
-            const accessJWT = localStorage.getItem('access');
-            const fetchData = async () => {
-                try{
-                    const requestOptions = {
-                        method: 'GET',
-                        headers : {
-                            'Content-Type': 'application/json',
-                            'Authorization': `JWT ${accessJWT}`}
-                    };
-                    const response = await fetch(`http://localhost:8000/api/v1/profileStories/${profile.username}`, requestOptions);
-                    if(response.status === 200){
-                        const stories = await response.json();
-                        setStories(stories);
-                    }
-                }catch(error){
-                    console.log(error);
+        const fetchData = async () => {
+            try{
+                const responseProfile = await fetch(`http://localhost:8000/api/v1/profileData/${username}`);
+                const responseStories = await fetch(`http://localhost:8000/api/v1/profileStories/${username}`);
+                const profileStories = await responseStories.json();
+                const profileData = await responseProfile.json();
+                if(!responseProfile.ok){
+                    navigate('/');
                 }
+                setProfile(profileData);
+                setStories(profileStories);
+                setIsLoading(true);
+                if(isLogin){
+                    const jwtToken = jwt(localStorage.getItem('access'));
+                    setJwtDecode(jwtToken);
+                }
+            }catch(error){
+                console.log(error);
             }
-            fetchData();
-        }else{
-            console.log('not logined');
         }
-    }, [isLogin]);
+        fetchData();
+    }, [isLogin, username, navigate])
 
     const renderItems = () => {
         const listOfStories = stories;
@@ -60,8 +61,31 @@ function Profile() {
             </div>
     ))};
 
+    const handleExitSubmit = (event) => {
+        event.preventDefault();
+        localStorage.clear();
+        navigate('/');
+        window.location.reload();
+    }
+
+    const profileActions = () => {
+        if(jwtDecode.user_id === profile.id){
+            return (
+            <div className="profile-actions-div">
+                <Link to="/profile/edit/" className="profile-edit">Изменить профиль</Link>
+                <Link to="/story/create/" className="profile-edit">Создать историю</Link>
+                <Link to="/" onClick={handleExitSubmit} className="profile-edit">Выйти</Link>
+            </div>
+            )
+        }else{
+            return (<></>)
+        }
+    }
+
   return (
   <>
+  {isLoading && 
+   <>
     <div className="side-bar-profile-div">
         <div className="stories-theme-div">
             <h4 className="stories-theme">Профиль</h4>
@@ -69,7 +93,7 @@ function Profile() {
         
         <div className="profile">
             <div className="profile-image-div">
-                <img src={profile.profile_picture} class="profile-image" alt={profile.username} />
+                <img src={profile.profile_picture} className="profile-image" alt={profile.username} />
             </div>
 
             <div className="profile-header-div">
@@ -83,7 +107,7 @@ function Profile() {
                     <div className="profile-mini-info-div">
                         <div className="profile-counters-div">
                             <p className="profile-count">
-                            6 <br/>
+                            {stories.length} <br/>
                             Историй
                             </p>
                         </div>
@@ -95,17 +119,20 @@ function Profile() {
                         </div>
                     </div>
                 </div>
+                {profileActions()}
             </div>
         </div>
     </div>
     <div className="stories-st-theme-div">
         <div className="stories-theme-div">
-            <h4 className="stories-theme">Ваши истории</h4>
+            <h4 className="stories-theme">{jwtDecode.user_id === profile.id ? 'Ваши истории' : `Истории автора ${profile.username}`}</h4>
         </div>
         <div className="stories">
             {renderItems()}
         </div>
     </div>
+   </> 
+  }
   </>
   );
 }

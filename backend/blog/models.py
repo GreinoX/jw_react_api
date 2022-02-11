@@ -17,7 +17,7 @@ def get_random_string_for_url(length):
 STATUS = [
     ('reviewer', 'Критик'),
     ('writer', 'Писатель'),
-    ('on_right_way', 'На пусти истинном'),
+    ('on_right_way', 'На пути истинном'),
     ('junior_poet', 'Юный поэт'),
 ]
 

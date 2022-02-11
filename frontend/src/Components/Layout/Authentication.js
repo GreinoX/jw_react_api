@@ -62,6 +62,7 @@ function Authentication() {
               localStorage.setItem('profile', JSON.stringify(profile));
               localStorage.isLogin = true;
               navigate("/");
+              window.location.reload();
             }else{
               setErrors("Что то пошло не так.")
             }

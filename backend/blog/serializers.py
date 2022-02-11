@@ -1,3 +1,4 @@
+from calendar import c
 from rest_framework import serializers
 from .models import Category, Profile, Story
 
@@ -31,8 +32,25 @@ class StoryDetailSerializer(serializers.ModelSerializer):
         model = Story
         exclude = ('draft', 'url', )
 
+class StoryCreateSerializer(serializers.ModelSerializer):
+    
+    def create(self, validated_data):
+        return Story.objects.create(**validated_data)
+    
+    class Meta:
+        model = Story
+        fields = ('title', 'shortinfo', 'image', 'category', 'creator')
+
 class ProfileDetailSerializer(serializers.ModelSerializer):
+    status = serializers.CharField(source='get_status_display')
 
     class Meta:
         model = Profile
-        fields = ("username", "profile_picture", "profile_url", "status", )
+        fields = ("id", "first_name", "last_name", "username", "profile_picture", "status", )
+        
+class ProfileEditSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Profile
+        fields = ("id", "first_name", "last_name", "profile_picture", "status", )
+        

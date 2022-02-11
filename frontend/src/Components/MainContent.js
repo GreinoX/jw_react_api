@@ -11,7 +11,8 @@ class MainContent extends Component {
         this.state = {
           stories: [],
           categories: [],
-          placeholder: ""
+          placeholder: "",
+          isLoading: false
         };
       }
 
@@ -22,7 +23,8 @@ class MainContent extends Component {
             const categories = await fetch("http://localhost:8000/api/v1/categories/").then(res => res.json());
             this.setState({
             stories,
-            categories
+            categories,
+            isLoading: true
             });
         } catch(error){
             console.log(error);
@@ -53,8 +55,9 @@ class MainContent extends Component {
 
     render(){
         return (
-        <>  
-        <div className="main">
+        <> 
+        {this.state.isLoading && 
+        <>
             <div className="stories-st-theme-div">
                 <div className="stories-theme-div">
                 <h4 className="stories-theme">Новое</h4>
@@ -64,7 +67,8 @@ class MainContent extends Component {
                 </div>
             </div>
             <SideBar/>
-            </div>
+        </>
+        }
         </>
         )
         }

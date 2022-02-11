@@ -1,12 +1,21 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
+import React, { useEffect } from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import jwt from 'jwt-decode';
+import {updateJWTToken} from '../utils';
+
 
 function Header(props){
     const isLogin = localStorage.getItem('isLogin');
+    let profile = localStorage.getItem('profile');
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        updateJWTToken();
+    })
 
     const isLoggined = () => {
-        if(JSON.parse(isLogin) === true){
-            const profile = JSON.parse(localStorage.getItem('profile'));
+        if(isLogin && profile){
+            profile = JSON.parse(profile);
             return <Link to={"/profile/" + profile.username} className="menu-link">
                 <div className="header-profile-div">
                     <img src={profile.profile_picture} className="header-profile-image" alt={profile.username} />
@@ -15,10 +24,6 @@ function Header(props){
         }else{
             return <Link to="/login/" className="menu-link enter">Войти</Link>
         }
-    }
-
-    const handleSubmitExit = (event) => {
-        localStorage.clear();
     }
 
     return (

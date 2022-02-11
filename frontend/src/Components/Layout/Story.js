@@ -10,6 +10,7 @@ function Story() {
     const {url_id} = useParams();
     const [post, setPost] = useState([]);
     const [category, setCategory] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useScrollToTop();
     
@@ -19,6 +20,7 @@ function Story() {
                 const response = await fetch(`http://localhost:8000/api/v1/story/${url_id}`).then(res => res.json());
                 setPost(response);
                 setCategory(response.category);
+                setIsLoading(true);
             }catch(error){
                 console.log(error);
             }
@@ -32,7 +34,9 @@ function Story() {
 
   return (
       <>
-        <div className="story-detail-div" key={post.id}>
+      {isLoading &&
+      <>
+      <div className="story-detail-div" key={post.id}>
             <div className="story-header-div" style={styleForHeader} >
                 <div className="story-header-black"></div>
                 <div className="story-header-category-div">
@@ -58,6 +62,9 @@ function Story() {
             </div>
         </div>
         <SideBar />
+      </>
+      }
+        
     </>
   );
 }

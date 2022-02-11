@@ -10,6 +10,9 @@ urlpatterns = [
     path('categories/', CategoryListView.as_view(), name='categories-list'),
     path('category/<slug:url>', StoryListByCategoryView.as_view(), name='story-list-by-category-view'),
     path('profileData/<username>', ProfileDetailView.as_view()),
-    path('profileStories/<username>', StoryListByProfileView.as_view())
+    path('profileData/edit/<username>', ProfileForUpdateView.as_view()),
+    path('profileStories/<username>', StoryListByProfileView.as_view()),
+    path('story/create/', StoryCreateView.as_view()),
+    path('profile/edit/<int:id>', ProfileUpdateView.as_view()),
     
 ]

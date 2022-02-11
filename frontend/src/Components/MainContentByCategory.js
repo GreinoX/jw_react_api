@@ -11,6 +11,7 @@ function MainContentByCategory() {
     const {url_id} = useParams();
     const [listOfPost, setListOfPost] = useState([]);
     const [category, setCategory] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -19,9 +20,11 @@ function MainContentByCategory() {
                 if(response.length !== 0){
                     setListOfPost(response);
                     setCategory(response[0].category.title);
+                    setIsLoading(true);
                 }else{
                     setListOfPost([]);
                     setCategory("Напишите первую историю в этом жанре!");
+                    setIsLoading(true);
                 }
             }catch(error){
                 console.log(error);
@@ -53,7 +56,8 @@ function MainContentByCategory() {
 
   return (
     <>
-    <div className="main">
+    {isLoading && 
+    <>
     <div className="stories-st-theme-div">
         <div className="stories-theme-div">
             <h4 className="stories-theme">{category}</h4>
@@ -63,7 +67,8 @@ function MainContentByCategory() {
         </div>
     </div>
     <SideBar/>
-    </div>
+    </>
+    }
     </>
   );
 }

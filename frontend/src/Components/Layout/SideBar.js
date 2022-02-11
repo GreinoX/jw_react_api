@@ -5,14 +5,16 @@ class SideBar extends Component{
     constructor(props){
         super(props);
         this.state = {
-            categories: []
+            categories: [],
+            isLoading: false
         };
     }
 
     async componentDidMount(){
         try{
             let categories = await fetch("http://localhost:8000/api/v1/categories").then(data => data.json());
-            this.setState({categories});
+            this.setState({categories,
+            isLoading: true});
         }catch(error){
             console.log(error);
         }
@@ -27,6 +29,8 @@ class SideBar extends Component{
 
     render(){
         return (
+            <>
+            {this.state.isLoading && 
             <div className="side-bar-div">
                 <div className="stories-theme-div">
                     <h4 className="stories-theme">Жанры</h4>
@@ -35,7 +39,9 @@ class SideBar extends Component{
                     {this.renderCatItems()}
                 </div>
             </div>
-        );
+            }
+            </>
+            );
     }
 
 }
