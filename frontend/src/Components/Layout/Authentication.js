@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import writeIcon from '../../static/icons/write.svg';
 import {Link, useNavigate} from 'react-router-dom';
 
@@ -9,6 +9,10 @@ function Authentication() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = "Просто Пиши | Вход"
+  }, [])
 
   const handleLogin = (event) => {
     setLogin(event.target.value);

@@ -462,6 +462,20 @@ hr{
   font-size: 14px;
 }
 
+.story-action{
+  background-color: #C98949;
+  padding: 5px 10px 5px 10px;
+  border-radius: 5px;
+  color: #EAE0D5;
+  font-size: 14px;
+}
+
+.story-action:hover{
+  color: #EAE0D5;
+  background-color: #916335;
+}
+
+
 .edit-button{
   margin-right: 5px;
 }
@@ -758,13 +772,13 @@ hr{
   opacity: 0;
   font-weight: 100;
   position: absolute;
-  background-color: #09090a98;
   width: 200px;
   height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #C98949;
+  background-color: #00000094;
 }
 
 .image-edit-add{
@@ -779,28 +793,48 @@ hr{
   background-color: #121214;
 }
 
-.image-edit-remove{
+.image-edit-remove-div{
   position: absolute;
   top: 0;
   right: 0;
-  font-size: 30px;
-  padding-right: 10px;
-  z-index: 10;
+}
+
+.image-edit-remove{
+  width:25px;
+  height:25px;
+  position:relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius:6px;
+  border-radius: 100px;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+
+.image-edit-remove:before, .image-edit-remove:after{
+  content:'';
+  position:absolute;
+  width: 75%;
+  height:2px;
+  background-color:rgb(152, 152, 152);
+  border-radius:2px;
+}
+
+.image-edit-remove:before{
+  -webkit-transform:rotate(45deg);
+  -moz-transform:rotate(45deg);
+  transform:rotate(45deg);
+}
+
+.image-edit-remove:hover:after, .image-edit-remove:hover:before{
+  background-color: white;
 }
 
 .image-edit-remove:after{
-  padding: 0px;
-  margin: 0px;
-  display: inline-block;
-  content: "\00d7"; /* This will render the 'X' */
-  color: #afafaf;
-  z-index: 10;
-}
-
-.image-edit-remove:hover:after{
-  color: #ffffff;
-  z-index: 10;
-  cursor: default;
+  -webkit-transform:rotate(-45deg);
+  -moz-transform:rotate(-45deg);
+  transform:rotate(-45deg);
 }
 
 .profile-image{
@@ -819,7 +853,7 @@ hr{
 
 .profile-header-rank{
   color: #A5A5A5;
-  font-size: 14px;
+  font-size: 14px;  
 }
 
 .profile-header-rank span{
@@ -848,6 +882,7 @@ hr{
 }
 
 .profile-mini-info-div{
+  margin-top: 10px;
   width: 100%;
   display: flex;
 }
@@ -936,7 +971,25 @@ hr{
 
 .story-create-image-div{
   width: 400px;
+  height: 250px;
 }
+
+.actions-with-image{
+  display: flex;
+  align-items: center;
+}
+
+.remove-image{
+  color: #A5A5A5;
+  margin-left: 10px;
+  text-decoration: underline;
+  font-size: 14px;
+}
+
+.remove-image:hover{
+  color: #C98949;
+}
+
 
 .image-now{
   width: 250px;

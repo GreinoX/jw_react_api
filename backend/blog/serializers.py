@@ -13,7 +13,7 @@ class CreatorSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Profile
-        fields = ("username", )
+        fields = ("id", "username", )
 
 
 class StoryListSerializer(serializers.ModelSerializer):
@@ -30,7 +30,7 @@ class StoryDetailSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Story
-        exclude = ('draft', 'url', )
+        exclude = ('draft',)
 
 class StoryCreateSerializer(serializers.ModelSerializer):
     
@@ -43,13 +43,14 @@ class StoryCreateSerializer(serializers.ModelSerializer):
 
 class ProfileDetailSerializer(serializers.ModelSerializer):
     status = serializers.CharField(source='get_status_display')
+    profile_picture = serializers.CharField(source='get_profile_picture')
 
     class Meta:
         model = Profile
         fields = ("id", "first_name", "last_name", "username", "profile_picture", "status", )
         
 class ProfileEditSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Profile
         fields = ("id", "first_name", "last_name", "profile_picture", "status", )

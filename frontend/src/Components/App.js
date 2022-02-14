@@ -12,7 +12,7 @@ import Registration from './Layout/Registration';
 import Profile from './Layout/Profile';
 import CreateStory from './Layout/CreateStory';
 import EditProfile from './Layout/EditProfile';
-
+import EditStory from './Layout/EditStory';
 
 class App extends Component {
 
@@ -31,6 +31,7 @@ class App extends Component {
         <Route path="/profile/:username" element={<Profile/>} />
         <Route path="/story/create/" exact element={<CreateStory/>} />
         <Route path="/profile/edit/" exact element={<EditProfile/>}/>
+        <Route path="/story/edit/:url_id" exact element={<EditStory/>}/>
       </Routes>
     </div>
     <Footer />

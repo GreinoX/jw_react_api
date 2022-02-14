@@ -28,9 +28,13 @@ function Profile() {
                 setProfile(profileData);
                 setStories(profileStories);
                 setIsLoading(true);
+                document.title = `Просто Пиши | Профиль ${profileData.username}`;
                 if(isLogin){
                     const jwtToken = jwt(localStorage.getItem('access'));
                     setJwtDecode(jwtToken);
+                    if(jwtToken.user_id === profileData.id){
+                        document.title = "Просто Пиши | Личный Профиль"
+                    }
                 }
             }catch(error){
                 console.log(error);
@@ -99,11 +103,13 @@ function Profile() {
             <div className="profile-header-div">
                 <div className="profil-header-name-div">
                     <h4 className="profile-header-name">
-                        {profile.username}
+                        {profile.first_name || profile.last_name ? profile.first_name + " " + profile.last_name : profile.username}
                     </h4>
                 </div>
                 <div className="profile-header-rank">
+                    {profile.status && (
                     <p className="profile-header-rank">Звание: {profile.status}</p>
+                    )}
                     <div className="profile-mini-info-div">
                         <div className="profile-counters-div">
                             <p className="profile-count">
