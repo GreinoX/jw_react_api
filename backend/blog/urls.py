@@ -13,6 +13,8 @@ urlpatterns = [
     path('profileData/edit/<username>', ProfileForUpdateView.as_view()),
     path('profileStories/<username>', StoryListByProfileView.as_view()),
     path('story/create/', StoryCreateView.as_view()),
+    path('story/update/<int:id>', StoryUpdateView.as_view()),
+    path('story/destroy/<int:id>', StoryDestroyView.as_view(), name=""),
     path('profile/edit/<int:id>', ProfileUpdateView.as_view()),
     
 ]

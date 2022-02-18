@@ -2,13 +2,19 @@ html, body{
   margin: 0;
   padding: 0;
   background-color: #1A1A1D;
-  position: relative;
 }
 
 #root{
-  position: relative;
   min-height: 100vh;
   padding: 0;
+  position: relative;
+}
+
+.vert-hr{
+  width: 1px;
+  margin: 0px 10px 0px 10px;
+  background-color: #A5A5A5;
+  opacity: 0.3;
 }
 
 a{
@@ -18,6 +24,12 @@ a{
 hr{
   color: #5E503F;
 }
+
+.modal-signature{
+  position: absolute;
+  margin-top: 10px;
+}
+
 
 /* HEADER STYLES */
 .header{
@@ -118,6 +130,10 @@ hr{
   height: 150%;
 }
 
+.profile-header{
+  position: relative;
+  text-align: center;
+}
 
 /* STORIES LIST STYLE */
 .stories-st-theme-div{
@@ -463,27 +479,96 @@ hr{
 }
 
 .story-action{
-  background-color: #C98949;
-  padding: 5px 10px 5px 10px;
-  border-radius: 5px;
+  background-color: #232327;
+  padding: 6px 11px 6px 11px;
   color: #EAE0D5;
   font-size: 14px;
+  border-radius: 5px;
 }
 
 .story-action:hover{
   color: #EAE0D5;
-  background-color: #916335;
+  background-color: #0C0C0E;
+  cursor: pointer;
 }
 
+
+.story-detail-user-actions{
+  display: flex;
+  align-items: center;
+}
 
 .edit-button{
   margin-right: 5px;
 }
 
-.delete-button{
-  background-color: tomato;
+.delete-action{
+  position: relative;
 }
 
+.submit-delete-action{
+  position: absolute;
+  margin-top: 10px;
+  padding: 10px 20px 10px 20px;
+  background-color: #1A1A1D;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  border-radius: 5px;
+}
+
+.submit-delete-action span:hover{
+  cursor: pointer;
+}
+
+.submit-delete-action span:last-child{
+  margin-left: 10px;
+}
+
+.success-btn{
+  background-color: rgb(0, 182, 85);
+}
+
+.delete-button{
+  margin-left: 10px;
+  border: solid 1px #232327;
+}
+
+.delete-button:hover{
+  cursor: pointer;
+  border: solid 1px #0C0C0E;
+  background-color: #0C0C0E;
+}
+
+.delete-text{
+  text-align: center;
+  font-size: 16px;
+  color: #A5A5A5;
+}
+
+.story-like-div{
+  margin: 5px 0px 15px 0px;
+}
+
+.like{
+  box-sizing: border-box;
+  display: flex;
+  width: 16%;
+  align-items: center;
+  padding: 7px 13px 7px 15px;
+  border: solid 1px #C98949;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.like span{
+  font-size: 14px;
+  color: #A5A5A5;
+}
+
+.like img{
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+}
 
 /* STORY DETAIL NO IMAGE STYLE */
 .story-noi-header-div{
@@ -740,7 +825,7 @@ hr{
 
 /* PROFILE STYLES */
 .side-bar-profile-div{
-  width: 15%;
+  width: 17%;
   display: flex;
   flex-direction: column;
   margin-right: 15px;
@@ -749,12 +834,14 @@ hr{
 .profile{
   width: 100%;
   box-sizing: border-box;
-  padding: 0px 0px;
+  padding: 15px;
+  background-color: #232327;
+  border-radius: 5px;
 }
 
 .profile-image-div{
-  width: 200px;
-  height: 200px;
+  width: 195px;
+  height: 195px;
   overflow: hidden;
   border-radius:5px;
   display: flex;
@@ -847,13 +934,16 @@ hr{
 }
 
 .profile-header-name{
-  color: #A5A5A5;
+  color: #eb9642;
   margin-bottom: 0px;
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
 }
 
 .profile-header-rank{
   color: #A5A5A5;
-  font-size: 14px;  
+  font-size: 14px;
+  margin-top: 5px;
 }
 
 .profile-header-rank span{
@@ -871,29 +961,46 @@ hr{
 .profile-actions-div a{
   background-color: #232327;
   box-sizing: border-box;
-  padding: 15px 10px 15px 25px;
+  margin-top: 15px;
+  padding: 9px 10px 9px 15px;
   font-size: 13px;
-  color: #C98949;
+  color: #A5A5A5;
+  display: flex;
+  align-items: center;
+}
+
+.profile-actions-div a:first-child{
+  margin-top: 0px;
+}
+
+.profile-actions-div a img{
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
 }
 
 .profile-actions-div a:hover{
   background-color: #0C0C0E;
-  color: #C98949
+  border-radius: 5px;
 }
 
 .profile-mini-info-div{
-  margin-top: 10px;
+  margin-top: 20px;
   width: 100%;
   display: flex;
-}
-
-.profile-counters-div{
-  margin-right: 20px;
+  margin-bottom: 20px;
 }
 
 .profile-count{
   text-align: center;
   font-size: 14px;
+  margin: 0px;
+}
+
+.profile-counters-div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 
@@ -1143,4 +1250,73 @@ hr{
 
 .version-div{
   margin-left: auto;
+}
+
+
+
+/* STYLE OF MODALE PAGE */
+.modal-page{
+  top: 0;
+  left: 0;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0c0c0e7a;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mdp-of-delete-div{
+  background-color: #1A1A1D;
+  color: white;
+  padding: 20px 30px 20px 30px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+
+.delete-image{
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-image img{
+  width: 100px;
+  height: 100px;
+}
+
+.delete-actions span:last-child{
+  margin-left: 10px;
+}
+
+.story-action-close{
+  font-size: 14px;
+  padding: 5px 9px 5px 9px;
+  border-radius: 5px;
+  border: solid 2px #C98949;
+  color: #EAE0D5;
+}
+
+.story-action-close:hover{
+  cursor: pointer;
+  background-color: #09090A;
+}
+
+.access-button{
+  font-size: 14px;
+  background-color: #232327;
+  padding: 7px 11px 7px 11px;
+  border-radius: 5px;
+  color: #A5A5A5;
+}
+
+.access-button:hover{
+  background-color: #09090A;
+  cursor: pointer;
 }

@@ -24,7 +24,7 @@ STATUS = [
 
 class Profile(AbstractUser):
     status = models.CharField("Статус", max_length=40, null=True, blank=True, choices=STATUS, default='on_right_way')
-    profile_picture = models.ImageField("Фотография", upload_to="users/%y.%m.%d", blank=True, default="users/default.png")
+    profile_picture = models.ImageField("Фотография", upload_to="users/%y.%m.%d", null=True, default="users/default.png")
     profile_url = models.SlugField("Личная ссылка", max_length=150, null=True, unique=True)
     profile_rating = models.SmallIntegerField("Рейтинг", null=True, default=0)
     

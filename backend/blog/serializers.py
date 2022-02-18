@@ -32,6 +32,12 @@ class StoryDetailSerializer(serializers.ModelSerializer):
         model = Story
         exclude = ('draft',)
 
+class StoryUpdateSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Story
+        fields = ('id', 'title', 'shortinfo', 'category', 'creator', 'text', 'image')
+
 class StoryCreateSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
@@ -43,7 +49,6 @@ class StoryCreateSerializer(serializers.ModelSerializer):
 
 class ProfileDetailSerializer(serializers.ModelSerializer):
     status = serializers.CharField(source='get_status_display')
-    profile_picture = serializers.CharField(source='get_profile_picture')
 
     class Meta:
         model = Profile

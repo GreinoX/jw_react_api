@@ -3,6 +3,9 @@ import {useParams, Link, useNavigate} from 'react-router-dom';
 import {formatIntegers, imageForStory} from '../utils';
 import Like from '../../static/icons/minimalistic_like.svg';
 import View from '../../static/icons/views.svg';
+import EditIcon from '../../static/icons/edit.svg';
+import PlusIcon from '../../static/icons/plus.svg';
+import LogoutIcon from '../../static/icons/logout.svg';
 import jwt from 'jwt-decode';
 
 
@@ -76,9 +79,16 @@ function Profile() {
         if(jwtDecode.user_id === profile.id){
             return (
             <div className="profile-actions-div">
-                <Link to="/profile/edit/" className="profile-edit">Изменить профиль</Link>
-                <Link to="/story/create/" className="profile-edit">Создать историю</Link>
-                <Link to="/" onClick={handleExitSubmit} className="profile-edit">Выйти</Link>
+                <Link to="/profile/edit/" className="profile-edit">
+                    <img src={EditIcon} alt="" />
+                    Изменить профиль
+                </Link>
+                <Link to="/story/create/" className="profile-edit">
+                    <img src={PlusIcon} alt="" />
+                    Создать историю</Link>
+                <Link to="/" onClick={handleExitSubmit} className="profile-edit">
+                    <img src={LogoutIcon} alt="" />
+                    Выйти</Link>
             </div>
             )
         }else{
@@ -97,7 +107,7 @@ function Profile() {
         
         <div className="profile">
             <div className="profile-image-div">
-                <img src={profile.profile_picture} className="profile-image" alt={profile.username} />
+                <img src={profile.profile_picture ? profile.profile_picture : "/media/users/default.png"} className="profile-image" alt={profile.username} />
             </div>
 
             <div className="profile-header-div">
@@ -108,7 +118,7 @@ function Profile() {
                 </div>
                 <div className="profile-header-rank">
                     {profile.status && (
-                    <p className="profile-header-rank">Звание: {profile.status}</p>
+                    <p className="profile-header-rank">Статус: {profile.status}</p>
                     )}
                     <div className="profile-mini-info-div">
                         <div className="profile-counters-div">
@@ -117,6 +127,7 @@ function Profile() {
                             Историй
                             </p>
                         </div>
+                        <div className="vert-hr"></div>
                         <div className="profile-counters-div">
                             <p className="profile-count">
                             0 <br/>

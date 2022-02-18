@@ -12,7 +12,7 @@ export const useScrollToTop = () => {
 
 export const imageForStory = (url) => {
     return {
-    backgroundImage: `url(${url})`
+    backgroundImage: `url(${url ? url : "/media/stories/standart.png"})`
     }
 }
 

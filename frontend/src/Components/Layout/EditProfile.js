@@ -16,6 +16,7 @@ export default function EditProfile() {
   const jwtToken = localStorage.getItem('access');
   const profile = JSON.parse(localStorage.getItem('profile'));
   const navigate = useNavigate();
+  const [defaultImage, setDefaultImage] = useState(false);
 
   useEffect(() => {
     if(isLogin && jwtToken){
@@ -29,6 +30,11 @@ export default function EditProfile() {
               if(jwtDecode.user_id === result.id){
                 setFirstName(result.first_name);
                 setLastName(result.last_name);
+                if(result.profile_picture){
+                  setWasImage(result.profile_picture);
+                }else{
+                  setDefaultImage(true);
+                }
                 setWasImage(result.profile_picture);
                 setStatus(result.status);
                 setIsLoading(true);
@@ -59,12 +65,26 @@ export default function EditProfile() {
 
   const handleImage = (event) => {
     setImage(event.target.files[0]);
+    setDefaultImage(false);
   }
 
   const handleRemoveImageButton = (event) => {
     event.preventDefault();
-    setImage("");
-    imageRef.current.value = "";
+    if(!wasImage){
+      setImage("");
+      imageRef.current.value = "";
+      setDefaultImage(true);
+    }else{
+      setImage("");
+      imageRef.current.value = "";
+      setDefaultImage(false);
+    }
+  }
+
+  const handleRemoveWasImageButton = (event) => {
+    event.preventDefault();
+    setWasImage("");
+    setDefaultImage(true);
   }
 
   const handleSubmit = (event) => {
@@ -74,7 +94,11 @@ export default function EditProfile() {
     const formData = new FormData();
     formData.append('first_name', firstName);
     formData.append('last_name', lastName);
-    if(image){ formData.append('profile_picture', image) }
+    if(image){
+      formData.append('profile_picture', image);
+    }else if(image === "" && !wasImage){
+      formData.append('profile_picture', "");
+    }
     formData.append('status', status);
     updateJWTToken();
     const fetchData = async () => {
@@ -107,7 +131,7 @@ export default function EditProfile() {
         <div className="story-create-div">
         <form className="story-create-form">
           <div className="stories-theme-div">
-            <h4 className="stories-theme">Изменение профиля...</h4>
+            <h4 className="stories-theme">Изменение профиля</h4>
           </div>
           <div className="story-create-field">
             <div className="story-create-title-slogan-div">
@@ -130,6 +154,9 @@ export default function EditProfile() {
                         <>
                           <div className="profile-image-div">
                             <div className="image-edit-invite">
+                              <div className="image-edit-remove-div">
+                                <div className="image-edit-remove" onClick={handleRemoveWasImageButton}></div>
+                              </div>
                               <div className="image-edit-add">
                                 <img src={PlusIcon} alt="" />
                               </div>  
@@ -152,6 +179,18 @@ export default function EditProfile() {
                             <img src={URL.createObjectURL(image)} alt="" width="250px" className="profile-image"/>
                           </div>
                         </>
+                      )}
+                      {defaultImage && (
+                        <>
+                        <div className="profile-image-div">
+                          <div className="image-edit-invite">
+                            <div className="image-edit-add">
+                              <img src={PlusIcon} alt="" />
+                            </div>  
+                          </div>
+                          <img src={"/media/users/default.png"} alt="" width="250px" className="profile-image"/>
+                        </div>
+                      </>
                       )}
                     </label>
                   </div>

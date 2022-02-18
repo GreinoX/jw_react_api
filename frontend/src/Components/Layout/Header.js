@@ -17,8 +17,13 @@ function Header(props){
         if(isLogin && profile){
             profile = JSON.parse(profile);
             return <Link to={"/profile/" + profile.username} className="menu-link">
-                <div className="header-profile-div">
-                    <img src={profile.profile_picture} className="header-profile-image" alt={profile.username} />
+                <div className="profile-header">
+                    <div className="header-profile-div">
+                        <img src={profile.profile_picture ? profile.profile_picture : "/media/users/default.png"} className="header-profile-image" alt={profile.username} />
+                    </div>
+                    {/* <div className="modal-signature">
+                        <p>Профиль</p>
+                    </div> */}
                 </div>
             </Link>
         }else{

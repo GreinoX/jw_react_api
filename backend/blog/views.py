@@ -66,3 +66,15 @@ class ProfileUpdateView(generics.UpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileEditSerializer
     lookup_field = 'id'
+
+class StoryUpdateView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    queryset = Story.objects.all()
+    serializer_class = StoryUpdateSerializer
+    lookup_field = 'id'
+    
+class StoryDestroyView(generics.DestroyAPIView):
+    serializer_class = StoryUpdateSerializer
+    queryset = Story.objects.all()
+    lookup_field = 'id'
+    # permission_classes = [permissions.IsAuthenticated, ]
