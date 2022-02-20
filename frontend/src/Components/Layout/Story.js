@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
-import Like from '../../static/icons/minimalistic_like.svg';
+import LikeWhite from '../../static/icons/white-lik.svg';
+import Like from '../../static/icons/minimalistic_like.svg'
 import View from '../../static/icons/views.svg';
 import Delete from '../../static/icons/delete.svg';
+import Bookmark from '../../static/icons/bookmark.svg';
+import BookmarkFill from '../../static/icons/bookmark_fill.svg';
 import {Link} from 'react-router-dom';
 import SideBar from './SideBar';
 import { imageForStory, updateJWTToken, useScrollToTop } from '../utils';
@@ -18,6 +21,7 @@ function Story() {
     const jwtToken = localStorage.getItem('access');
     const [jwtDecode, setJwtDecode] = useState("");
     const [isLiked, setIsLiked] = useState(false);
+    const [isBookmark, setIsBookmark] = useState(false);
     const [isModalPage, setIsModalPage] = useState(false);
     const navigate = useNavigate();
 
@@ -29,15 +33,27 @@ function Story() {
                 const response = await fetch(`http://localhost:8000/api/v1/story/${url_id}`).then(res => res.json());
                 setPost(response);
                 setCategory(response.category);
-                setIsLoading(true);
                 document.title = "Просто Пиши | " + response.title;
-                if(jwtToken && isLogin){
+                if(jwtToken && isLogin && profile){
                     try{
-                        setJwtDecode(jwt(jwtToken));
+                        const JWTDecode = jwt(jwtToken);
+                        setJwtDecode(JWTDecode);
+                        const requestOptions = {
+                            method: "GET",
+                            headers: {
+                                'Authorization': `JWT ${jwtToken}`
+                            }
+                        }
+                        const responseLiked = await fetch(`http://localhost:8000/api/v1/profileStoryRelation/${JWTDecode.user_id}/${response.id}`, requestOptions);
+                        if(responseLiked.ok){
+                            const dataLiked = await responseLiked.json();
+                            setIsLiked(dataLiked.is_liked)
+                        }
                     }catch(error){
-                        console.log(error)
+                        console.log(error);
                     }
                 }
+                setIsLoading(true);
             }catch(error){
                 console.log(error);
             }
@@ -79,12 +95,35 @@ function Story() {
     }
 
     const handleLikeSubmit = (event) => {
-        if(isLiked){
-            setIsLiked(false);
-            console.log('not liked')
+        if(isLogin && jwtDecode && profile){
+            const fetchData = async () => {
+                updateJWTToken();
+                try{
+                    const requestOptions = {
+                        method: "PUT",
+                        headers: {
+                            'Authorization': `JWT ${jwtToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({user: jwtDecode.user_id, story: post.id, is_liked: isLiked ? false : true})
+                    }
+                    const response = await fetch(`http://localhost:8000/api/v1/profileStoryRelation/update/${jwtDecode.user_id}/${post.id}`, requestOptions);
+                    if(response.ok){
+                        setIsLiked(isLiked ? false : true)
+                    }
+                }catch(error){
+                    console.log(error)
+                }
+            }
+            fetchData();
+        }
+    }
+
+    const handleBookmarkSubmit = (event) => {
+        if(isBookmark){
+            setIsBookmark(false);
         }else{
-            setIsLiked(true);
-            console.log('liked')
+            setIsBookmark(true);
         }
     }
 
@@ -140,9 +179,12 @@ function Story() {
                 </div>
                 )}
             <div className="story-like-div">
-                <div className="like" onClick={handleLikeSubmit} style={isLiked ? {bakgroundColor: "#C98949"} : {}}>
-                    <img src={Like} alt="" />
-                    <span>Понравилось</span>
+                <div className="like" onClick={handleLikeSubmit} style={isLiked ? {backgroundColor: "#C98949", width: "40px"} : {}}>
+                    <img src={LikeWhite} style={isLiked ? {marginRight: "0px"} : {}} alt="" />
+                    <span style={isLiked ? {position: "absolute", marginRight: "200px", opacity: "0"} : {}}>Понравилось</span>
+                </div>
+                <div className="bookmark" onClick={handleBookmarkSubmit} style={isBookmark ? {backgroundColor: "#C98949"} : {}}>
+                    <img src={isBookmark ? BookmarkFill : Bookmark} alt="" />
                 </div>
             </div>
             <div className="story-detail-text">

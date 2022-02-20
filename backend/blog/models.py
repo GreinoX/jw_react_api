@@ -71,9 +71,12 @@ class Story(models.Model):
     views = models.SmallIntegerField("Просмотры", null=True, default=0)
     url = models.SlugField("Личная ссылка", unique=True)
     creator = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="creator_stories", null=True)
-    # readers = models.ManyToManyField(Profile, through='ProfileStoryRelation', related_name="readers_stories")
+    readers = models.ManyToManyField(Profile, through='ProfileStoryRelation', related_name="readers_stories")
     
     
+    def get_likes(self):
+        return self.readers.filter()
+
     def formatted_views(self):
         if self.views > 1000000:
             return str(self.views // 1000000) + "M"
@@ -121,7 +124,7 @@ class ProfileStoryRelation(models.Model):
     in_bookmarks = models.BooleanField("В закладках", default=False)
     
     def __str__(self):
-        return f'Profile: {self.user.username} -> {self.story}'
+        return f'Profile: {self.user.username} {self.user.id} -> {self.story} {self.story.id}'
     
     class Meta:
         verbose_name = "Лайки и закладки"

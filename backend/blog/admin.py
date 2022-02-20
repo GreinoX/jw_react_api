@@ -23,6 +23,7 @@ class ProfileUserAdmin(UserAdmin):
             ('Доп. Информация', {'fields': ('status', 'profile_picture', 'profile_rating')}),
     )
 
+    
 admin.site.register(Profile, ProfileUserAdmin)
 
 admin.site.site_title = 'Просто Пиши'

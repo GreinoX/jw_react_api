@@ -15,6 +15,8 @@ urlpatterns = [
     path('story/create/', StoryCreateView.as_view()),
     path('story/update/<int:id>', StoryUpdateView.as_view()),
     path('story/destroy/<int:id>', StoryDestroyView.as_view(), name=""),
+    path('story/likes/<int:story_id>', StoryLikesView.as_view(), name=""),
     path('profile/edit/<int:id>', ProfileUpdateView.as_view()),
-    
+    path('profileStoryRelation/<int:user_id>/<int:story_id>', ProfileStoryRelationView.as_view()),
+    path('profileStoryRelation/update/<int:user_id>/<int:story_id>', ProfileStoryRelationUpdateView.as_view()),
 ]

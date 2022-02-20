@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
@@ -78,3 +79,25 @@ class StoryDestroyView(generics.DestroyAPIView):
     queryset = Story.objects.all()
     lookup_field = 'id'
     # permission_classes = [permissions.IsAuthenticated, ]
+
+class ProfileStoryRelationView(generics.RetrieveAPIView):
+    serializer_class = ProfileStoryRelationSerializer
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get_object(self):
+        obj, _ = ProfileStoryRelation.objects.get_or_create(user_id = self.kwargs['user_id'], story_id = self.kwargs['story_id'])
+        return obj
+
+
+class ProfileStoryRelationUpdateView(generics.UpdateAPIView):
+    serializer_class = ProfileStoryRelationSerializer
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get_object(self):
+        return ProfileStoryRelation.objects.get(user_id = self.kwargs['user_id'], story_id = self.kwargs['story_id'])
+
+class StoryLikesView(generics.ListAPIView):
+    serializer_class = StoryLikesSerializer
+    
+    def get_queryset(self):
+        return ProfileStoryRelation.objects.filter(story_id = self.kwargs['story_id'], is_liked = True)

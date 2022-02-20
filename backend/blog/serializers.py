@@ -1,6 +1,6 @@
 from calendar import c
 from rest_framework import serializers
-from .models import Category, Profile, Story
+from .models import Category, Profile, ProfileStoryRelation, Story
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -60,3 +60,15 @@ class ProfileEditSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ("id", "first_name", "last_name", "profile_picture", "status", )
         
+class ProfileStoryRelationSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.all())
+    story = serializers.PrimaryKeyRelatedField(queryset=Story.objects.all())
+
+    class Meta:
+        model = ProfileStoryRelation
+        fields = ("user", "story", "is_liked", )
+
+class StoryLikesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('id', )
