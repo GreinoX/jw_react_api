@@ -143,6 +143,13 @@ function Profile() {
     <div className="stories-st-theme-div">
         <div className="stories-theme-div">
             <h4 className="stories-theme">{jwtDecode.user_id === profile.id ? 'Ваши истории' : `Истории автора ${profile.username}`}</h4>
+            {jwtDecode.user_id === profile.id && (
+                <>
+                <div className="profile-actions-stories">
+                    <p>Избранное</p>
+                </div>
+                </>
+            )}
         </div>
         <div className="stories">
             {renderItems()}

@@ -4,6 +4,8 @@ import Like from '../static/icons/minimalistic_like.svg';
 import View from '../static/icons/views.svg';
 import {Link} from 'react-router-dom';
 import {formatIntegers, imageForStory} from './utils';
+import SearchIcon from '../static/icons/search.svg';
+import Search from './Layout/Search'
 
 class MainContent extends Component {
     constructor(props){
@@ -12,8 +14,10 @@ class MainContent extends Component {
           stories: [],
           categories: [],
           placeholder: "",
-          isLoading: false
+          isLoading: false,
+          searchText: ""
         };
+        this.handleSearchText = this.handleSearchText.bind(this);
       }
 
 
@@ -29,6 +33,10 @@ class MainContent extends Component {
         } catch(error){
             console.log(error);
         }
+    }
+
+    handleSearchText = (event) => {
+        this.setState({searchText: event.target.value})
     }
 
     renderItems = () => {
@@ -60,7 +68,8 @@ class MainContent extends Component {
         <>
             <div className="stories-st-theme-div">
                 <div className="stories-theme-div">
-                <h4 className="stories-theme">Новое</h4>
+                    <h4 className="stories-theme">Новое</h4>
+                    <Search />
                 </div>
                 <div className="stories">
                 {this.renderItems()}

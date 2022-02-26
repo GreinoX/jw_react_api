@@ -14,6 +14,7 @@ import jwt from 'jwt-decode';
 function Story() {
     const {url_id} = useParams();
     const [post, setPost] = useState([]);
+    const [postLikes , setPostLikes] = useState(0);
     const [category, setCategory] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const profile = localStorage.getItem('profile');
@@ -32,6 +33,7 @@ function Story() {
             try{
                 const response = await fetch(`http://localhost:8000/api/v1/story/${url_id}`).then(res => res.json());
                 setPost(response);
+                setPostLikes(response.rating);
                 setCategory(response.category);
                 document.title = "Просто Пиши | " + response.title;
                 if(jwtToken && isLogin && profile){
@@ -96,8 +98,8 @@ function Story() {
 
     const handleLikeSubmit = (event) => {
         if(isLogin && jwtDecode && profile){
+            updateJWTToken();
             const fetchData = async () => {
-                updateJWTToken();
                 try{
                     const requestOptions = {
                         method: "PUT",
@@ -110,6 +112,7 @@ function Story() {
                     const response = await fetch(`http://localhost:8000/api/v1/profileStoryRelation/update/${jwtDecode.user_id}/${post.id}`, requestOptions);
                     if(response.ok){
                         setIsLiked(isLiked ? false : true)
+                        setPostLikes(isLiked ? parseInt(postLikes) - 1 : parseInt(postLikes) + 1)
                     }
                 }catch(error){
                     console.log(error)
@@ -140,7 +143,7 @@ function Story() {
                 <div className="story-header-rating-views-div">
                     <span className="story-header-rating">
                         <img src={Like} alt="" className="story-header-rating-image"/>
-                        {post.rating}
+                        {postLikes}
                     </span>
                     <span className="story-header-views">
                         <img src={View} alt="" className="story-header-views-image"/>

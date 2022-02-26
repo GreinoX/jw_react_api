@@ -18,6 +18,8 @@ class CreatorSerializer(serializers.ModelSerializer):
 
 class StoryListSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
+    rating = serializers.CharField(source='get_likes')
+    views = serializers.CharField(source='get_views')
     
     class Meta:
         model = Story
@@ -27,6 +29,8 @@ class StoryListSerializer(serializers.ModelSerializer):
 class StoryDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     creator = CreatorSerializer()
+    rating = serializers.CharField(source='get_likes')
+    views = serializers.CharField(source='get_views')
     
     class Meta:
         model = Story
@@ -36,7 +40,7 @@ class StoryUpdateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Story
-        fields = ('id', 'title', 'shortinfo', 'category', 'creator', 'text', 'image')
+        fields = ('id', 'title', 'shortinfo', 'category', 'creator', 'text', 'image', 'rating')
 
 class StoryCreateSerializer(serializers.ModelSerializer):
     
@@ -45,7 +49,7 @@ class StoryCreateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Story
-        fields = ('title', 'shortinfo', 'image', 'category', 'creator')
+        fields = ('title', 'shortinfo', 'image', 'category', 'creator', 'url')
 
 class ProfileDetailSerializer(serializers.ModelSerializer):
     status = serializers.CharField(source='get_status_display')

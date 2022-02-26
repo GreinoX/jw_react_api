@@ -42,9 +42,10 @@ export const formatIntegers = (num) => {
 export const updateJWTToken = () => {
     const refreshJWTToken = localStorage.getItem('refresh');
     const isLogin = localStorage.getItem('isLogin');
+    const profile = localStorage.getItem('profile');
     const jwtToken = localStorage.getItem('access');
 
-    if(jwtToken){
+    if(jwtToken && profile && isLogin && refreshJWTToken){
         try{
             const jwtDecode = jwt(jwtToken);
             if(jwtDecode.exp < Date.now() / 1000){
@@ -74,6 +75,8 @@ export const updateJWTToken = () => {
             window.location.replace('/');
             window.location.reload();
         }
+    }else{
+        localStorage.clear()
     }
 }
 

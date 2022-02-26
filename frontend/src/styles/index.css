@@ -159,9 +159,12 @@ hr{
   font-size: 21px;
 }
 
-.search-form{
+.search-form-div{
   position: absolute;
   right: 5%;
+}
+
+.search-form{
   display: flex;
   align-items: center;
 }

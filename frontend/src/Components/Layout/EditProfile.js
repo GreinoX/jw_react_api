@@ -115,7 +115,7 @@ export default function EditProfile() {
         .then(data => {
           data['username'] = profile.username;
           localStorage.setItem('profile', JSON.stringify(data))
-          navigate('/');
+          navigate(`/profile/${data['username']}`);
           window.location.reload();
         }).catch(error => {
           console.log(error);

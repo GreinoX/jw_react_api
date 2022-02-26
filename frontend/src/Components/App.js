@@ -4,6 +4,7 @@ import Header from './Layout/Header';
 import Footer from './Layout/Footer';
 import MainContent from './MainContent';
 import MainContentByCategory from './MainContentByCategory';
+import MainContentBySearch from './MainContentBySearch';
 import Stories from './Layout/Stories';
 import {Routes, Route } from 'react-router-dom';
 import Story from './Layout/Story';
@@ -32,6 +33,7 @@ class App extends Component {
         <Route path="/story/create/" exact element={<CreateStory/>} />
         <Route path="/profile/edit/" exact element={<EditProfile/>}/>
         <Route path="/story/edit/:url_id" exact element={<EditStory/>}/>
+        <Route path="/search/:search_value" exact element={<MainContentBySearch/>} />
       </Routes>
     </div>
     <Footer />

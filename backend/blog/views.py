@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
@@ -73,6 +74,16 @@ class StoryUpdateView(generics.UpdateAPIView):
     queryset = Story.objects.all()
     serializer_class = StoryUpdateSerializer
     lookup_field = 'id'
+
+class StoryUpdateRatingView(generics.UpdateAPIView):
+    queryset = Story.objects.all()
+    lookup_field = 'id'
+    serializer_class = StoryUpdateSerializer
+    
+    def perform_update(self, serializer):
+        story = serializer.save()
+        story.rating += 1
+        self.post_save(story)
     
 class StoryDestroyView(generics.DestroyAPIView):
     serializer_class = StoryUpdateSerializer
@@ -96,8 +107,10 @@ class ProfileStoryRelationUpdateView(generics.UpdateAPIView):
     def get_object(self):
         return ProfileStoryRelation.objects.get(user_id = self.kwargs['user_id'], story_id = self.kwargs['story_id'])
 
-class StoryLikesView(generics.ListAPIView):
-    serializer_class = StoryLikesSerializer
+class StoryListBySearchView(generics.ListAPIView):
+    serializer_class = StoryListSerializer
     
     def get_queryset(self):
-        return ProfileStoryRelation.objects.filter(story_id = self.kwargs['story_id'], is_liked = True)
+        filters = Q(title__icontains = self.kwargs['search_value']) | Q(text__icontains=self.kwargs['search_value'])
+        return Story.objects.filter(filters)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   

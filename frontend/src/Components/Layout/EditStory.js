@@ -122,11 +122,7 @@ export default function EditStory() {
             formData.append('title', title.trim());
             formData.append('shortinfo', shortInfo.trim());
             formData.append('text', text.trim());
-            if(image && !wasImage){
-                formData.append('image', image)
-            }else if(!wasImage && !image){
-                formData.append('image', image);
-            }
+            formData.append('image', image);
             formData.append('category', category);
             const fetchData = async () => {
                 updateJWTToken();

@@ -67,15 +67,17 @@ class Story(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория")
     draft = models.BooleanField("Черновик", default=False)
     published = models.DateField("Опубликованно", default=date.today)
-    rating = models.SmallIntegerField("Рейтинг", null=True, default=0)
+    rating = models.SmallIntegerField("Рейтинг", default=0)
     views = models.SmallIntegerField("Просмотры", null=True, default=0)
-    url = models.SlugField("Личная ссылка", unique=True)
+    url = models.SlugField("Личная ссылка", unique=True, blank=True)
     creator = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="creator_stories", null=True)
     readers = models.ManyToManyField(Profile, through='ProfileStoryRelation', related_name="readers_stories")
     
+    def get_views(self):
+        return self.readers.count()
     
     def get_likes(self):
-        return self.readers.filter()
+        return ProfileStoryRelation.objects.filter(story_id = self.id, is_liked = True).count()
 
     def formatted_views(self):
         if self.views > 1000000:

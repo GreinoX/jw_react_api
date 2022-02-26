@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {useNavigate} from 'react-router-dom';
 import jwt from 'jwt-decode';
 import {getCookie} from '../utils';
-import { updateJWTToken } from '../utils';
+import { updateJWTToken, formatIntegers } from '../utils';
+import Like from '../../static/icons/minimalistic_like.svg';
+import View from '../../static/icons/views.svg';
 
 export default function CreateStory() {
     const isLogin = localStorage.getItem('isLogin');
@@ -15,6 +17,8 @@ export default function CreateStory() {
     const [text, setText] = useState("");
     const [categories, setCategories] = useState("");
     const [errors, setErrors] = useState([]);
+    const [catTitles, setCatTitles] = useState([]);
+    const imageRef = useRef();
     const csrfToken = getCookie('csrftoken');
 
     useEffect(() => {
@@ -25,6 +29,9 @@ export default function CreateStory() {
                 try{
                     const response = await fetch('http://localhost:8000/api/v1/categories/').then(res => res.json());
                     setCategories(response);
+                    setCatTitles(response.map(elem => {
+                        return elem.title
+                    }))
                 }catch(error){
                     console.log(error);
                 }
@@ -64,9 +71,14 @@ export default function CreateStory() {
         setText(event.target.value);
     }
 
+    const handleRemoveImage = (event) => {
+        setImage("");
+        imageRef.current.value = "";
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        if(title.trim() !== "" && shortInfo.trim() !== "" && text.trim() !== "" && image !== "" && category !== ""){
+        if(title.trim() !== "" && shortInfo.trim() !== "" && text.trim() !== "" && category !== ""){
             updateJWTToken();
             const fetchData = async () => {
                 try{
@@ -75,7 +87,9 @@ export default function CreateStory() {
                     formData.append('title', title.trim());
                     formData.append('shortinfo', shortInfo.trim());
                     formData.append('text', text.trim());
-                    formData.append('image', image, image.name);
+                    if(image){
+                        formData.append('image', image, image.name);
+                    }
                     formData.append('category', category);
                     formData.append('creator', creator);
                     const requestOptions = {
@@ -90,7 +104,8 @@ export default function CreateStory() {
 
                     const response = await fetch('http://localhost:8000/api/v1/story/create/', requestOptions);
                     if(response.ok){
-                        navigate('/')
+                        const data = await response.json();
+                        navigate(`/story/${data.url}`);
                     }
                 }catch(error){
                     console.log(error);
@@ -133,19 +148,34 @@ export default function CreateStory() {
             </div>
             <br/>
             <div className="story-create-title-slogan-div">
-                <div className="story-create-image-div input-blocks">
-                    <label htmlFor="id_image" className="story-create-labels">Постер</label>
-                    <input type="file" name="image" multiple="" className="story-create-image" required="" id="id_image" onChange={handleImage} />
-                    {image && (
-                        <img src={URL.createObjectURL(image)} alt="" width="250px" />
-                    )}
-                </div>
+                <div className="story-create-image-div input-blocks" style={{height: "100px"}}>
+                        <label htmlFor="id_image" className="story-create-labels">Постер</label>
+                        <div className="actions-with-image">
+                        <label htmlFor="id_image" className="story-action" style={{display: "block", width: "120px"}}>Загрузить файл</label>
+                        <label htmlFor="" className="remove-image" onClick={handleRemoveImage}>Убрать</label>
+                        </div>
+                        <input type="file" name="image" multiple="" className="story-create-image" ref={imageRef} required="" id="id_image" onChange={handleImage} hidden/>
+                    </div>
                 <div className="story-create-category-div input-blocks">
                     <label htmlFor="id_category" className="story-create-labels">Категория</label>
                     <select name="category" required="" id="id_category" onChange={handleCategory}>
                         <option defaultValue>Выберите категорию</option>
                         {renderSelectItems()}
                     </select>
+                </div>
+            </div>
+            <div className="story" style={{backgroundImage: `url(${image ? URL.createObjectURL(image) : '/media/stories/standart.png'})`}}>
+                <div className="black"></div>
+                <div className="story-category-div">
+                    <p className="story-category">{category.title ? category.title : catTitles[category - 1]}</p>
+                </div>
+                <div className="story-rating-views-div">
+                    <span className="story-rating"><img src={Like} alt="" className="story-rating-image"/> {formatIntegers(0)}</span>
+                    <span className="story-views"><img src={View} alt="" className="story-views-image"/>{formatIntegers(0)}</span>
+                </div>
+                <div className="story-title-div">
+                    <h3 className="story-title">{title}</h3>
+                    <p className="story-slogan">{shortInfo}</p>
                 </div>
             </div>
             <br/>
