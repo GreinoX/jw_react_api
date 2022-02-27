@@ -2,12 +2,23 @@ html, body{
   margin: 0;
   padding: 0;
   background-color: #1A1A1D;
+  overflow-x: hidden;
 }
 
 #root{
   min-height: 100vh;
   padding: 0;
   position: relative;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+.main-root{
+  position: relative;
+  width: 1150px;
+  box-sizing: border-box;
+  padding: 0px 10px 0px 10px;
 }
 
 .vert-hr{
@@ -63,7 +74,7 @@ hr{
 }
 
 .menu-link{
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: #A5A5A5;
   margin-right: 65px;
@@ -144,6 +155,7 @@ hr{
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  transition: .2s ease-in-out;
 }
 
 .stories-theme-div{
@@ -156,12 +168,12 @@ hr{
 .stories-theme{
   color: #EAE0D5;
   font-family: "Playfair Display", serif;
-  font-size: 21px;
+  font-size: 20px;
 }
 
 .search-form-div{
   position: absolute;
-  right: 5%;
+  right: 2%;
 }
 
 .search-form{
@@ -206,8 +218,8 @@ hr{
 
 .story{
   position: relative;
-  width: 300px;
-  height: 400px;
+  width: 270px;
+  height: 370px;
   display: flex;
   align-items: flex-end;
   margin-bottom: 25px;
@@ -220,7 +232,7 @@ hr{
   transition: .2s ease-out;
   padding: 45px 10px 15px 15px;
   box-sizing: border-box;
-  margin-right: 16px;
+  margin-right: 10px;
   float: left;
 }
 
@@ -256,7 +268,7 @@ hr{
 }
 
 .story-title{
-  font-size: 24px;
+  font-size: 21px;
   font-weight: 700;
   color: #eb9642;
   font-family: "Playfair Display", serif;
@@ -283,7 +295,7 @@ hr{
   border-radius: 0px 0px 10px 10px;
   color: #A5A5A5;
   box-shadow: 0 0 3px rgba(0,0,0,0.3);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .story-category:hover{
@@ -700,6 +712,10 @@ hr{
 }
 
 
+.story-create-category-div{
+  width: 400px;
+}
+
 /* PAGINATOR STYLES */
 .paginator{
   display: flex;
@@ -852,10 +868,10 @@ hr{
 
 /* PROFILE STYLES */
 .side-bar-profile-div{
-  width: 17%;
+  width: 20%;
   display: flex;
   flex-direction: column;
-  margin-right: 15px;
+  margin-right: auto;
 }
 
 .profile{
@@ -965,11 +981,12 @@ hr{
   margin-bottom: 0px;
   font-family: "Playfair Display", serif;
   font-weight: 700;
+  font-size: 21px;
 }
 
 .profile-header-rank{
   color: #A5A5A5;
-  font-size: 14px;
+  font-size: 13px;
   margin-top: 5px;
 }
 
@@ -1001,8 +1018,8 @@ hr{
 }
 
 .profile-actions-div a img{
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   margin-right: 10px;
 }
 
@@ -1020,7 +1037,7 @@ hr{
 
 .profile-count{
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
   margin: 0px;
 }
 
@@ -1028,6 +1045,26 @@ hr{
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.profile-actions-stories{
+  position: absolute;
+  right: 0;
+  margin-right: 5%;
+}
+
+.in-bookmarks{
+  font-size: 13px;
+  color: #eb9642;
+  opacity: 0.8;
+  border-bottom: dashed 1px #eb9642;
+  cursor: pointer;
+  margin-bottom: 0px;
+}
+
+.in-bookmarks:hover{
+  color: #eb9642;
+  opacity: 1;
 }
 
 

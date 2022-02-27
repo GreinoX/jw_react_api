@@ -22,7 +22,7 @@ export default function Search() {
                 <button className="search-button">
                     <img src={SearchIcon} className="search-button-image" alt="" />
                 </button>
-            <input type="text" placeholder="Открыть для себя новое" value={searchText} onChange={handleSearchText} className="search-input" />
+            <input type="text" placeholder="Поиск" value={searchText} onChange={handleSearchText} className="search-input" />
             </form>
         </div>
     )

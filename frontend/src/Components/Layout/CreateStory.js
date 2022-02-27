@@ -120,12 +120,12 @@ export default function CreateStory() {
 
   return (
     <div className="story-create-div">
-            <form className="story-create-form" >
-                    <div className="stories-theme-div">
-                        <h4 className="stories-theme">
-                            Создание истории...
-                        </h4>
-                    </div>
+        <form className="story-create-form" >
+            <div className="stories-theme-div">
+                <h4 className="stories-theme">
+                    Создать историю
+                </h4>
+            </div>
         <div className="story-create-field">
             <p className="errors">{errors}</p>
             <div className="story-create-title-slogan-div">

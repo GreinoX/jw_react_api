@@ -11,12 +11,15 @@ import jwt from 'jwt-decode';
 
 function Profile() {
     const [stories, setStories] = useState([]);
-    const [profile, setProfile] = useState({});
+    const [profile, setProfile] = useState([]);
+    const [bookmarksStories, setBookmarksStories] = useState([]);
     const {username} = useParams();
     const [jwtDecode, setJwtDecode] = useState({});
+    const jwtToken = localStorage.getItem('access');
     const navigate = useNavigate();
     const isLogin = localStorage.getItem('isLogin');
     const [isLoading, setIsLoading] = useState(false);
+    const [bookmarkSubmit, setBookmarkSubmit] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,11 +47,11 @@ function Profile() {
             }
         }
         fetchData();
-    }, [isLogin, username, navigate])
+    }, [username])
 
     const renderItems = () => {
-        const listOfStories = stories;
-        
+        const listOfStories = bookmarkSubmit ? bookmarksStories : stories;
+
         return listOfStories.map(item => (
             <div className="story" key={item.id} style={imageForStory(item.image)}>
                 <Link to={"/story/" + item.url}>
@@ -73,6 +76,44 @@ function Profile() {
         localStorage.clear();
         navigate('/');
         window.location.reload();
+    }
+
+    const handleBookmarkPage = (event) => {
+        if(jwtToken && profile && isLogin){
+            const fetchData = async () => {
+                try{
+                    const jwtDecode = jwt(jwtToken);
+                    const requestOptions = {
+                        method: "GET",
+                        headers: {
+                            'Authorization': `JWT ${jwtToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                    const response = await fetch(`http://localhost:8000/api/v1/story/byBookmarks/${jwtDecode.user_id}`, requestOptions)
+                    if(response.ok){
+                        const data = await response.json()
+                        if(data){
+                            setBookmarksStories(data.map(elem => {
+                                return elem.story
+                            }))
+                            setBookmarkSubmit(true);
+                        }
+                    }
+                }catch(error){
+                    console.log(error)
+                }
+            }
+        if(bookmarksStories.length !== 0){
+            setBookmarkSubmit(true)
+        }else{
+            fetchData()
+        }
+        }
+    }
+
+    const handleProfileStories = (event) => {
+        setBookmarkSubmit(false)
     }
 
     const profileActions = () => {
@@ -142,11 +183,15 @@ function Profile() {
     </div>
     <div className="stories-st-theme-div">
         <div className="stories-theme-div">
-            <h4 className="stories-theme">{jwtDecode.user_id === profile.id ? 'Ваши истории' : `Истории автора ${profile.username}`}</h4>
+            <h4 className="stories-theme">{jwtDecode.user_id === profile.id ? (
+                <>
+                {bookmarkSubmit ? 'Избранное' : 'Ваши истории'}
+                </>
+            ) : `Истории автора ${profile.username}`}</h4>
             {jwtDecode.user_id === profile.id && (
                 <>
                 <div className="profile-actions-stories">
-                    <p>Избранное</p>
+                    <p className="in-bookmarks" onClick={bookmarkSubmit ? handleProfileStories : handleBookmarkPage}>{bookmarkSubmit ? "Ваши истории" : "Избранное"}</p>
                 </div>
                 </>
             )}

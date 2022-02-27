@@ -1,10 +1,11 @@
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState, useRef} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import jwt from 'jwt-decode';
 import { formatIntegers, updateJWTToken } from '../utils';
 import Like from '../../static/icons/minimalistic_like.svg';
 import View from '../../static/icons/views.svg';
 import { useScrollToTop } from '../utils';
+import Select from 'react-select';
 
 export default function EditStory() {
     const {url_id} = useParams();
@@ -50,7 +51,9 @@ export default function EditStory() {
                     const responseCategories = await fetch(`http://localhost:8000/api/v1/categories/`)
                     .then(res => res.json())
                     .then(categories => {
-                        setCategories(categories);
+                        setCategories(categories.map(elem => {
+                            return {value: elem.value, label: elem.title}
+                        }));
                         setCatTitles(categories.map(item => {
                            return item.title
                         }));
@@ -71,13 +74,31 @@ export default function EditStory() {
         }
     }, [url_id])
 
+    const colourStyles = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isFocused ? "#09090A" : "#121214",
+            color: "#C98949"
+        }),
+        control: (provided, state) => ({
+            ...provided, 
+            backgroundColor: "#121214",
+            border: "none",
+            borderRadius: "5px"
+        }),
+        singleValue: (provided, state) => ({
+            ...provided, 
+            color:"#C98949",
+        }),
+        menuList: (provided, state) => ({
+            ...provided, 
+            backgroundColor:  "#121214",
+            borderRadius: "5px"
+        })
+    }
+
     const renderSelectItems = () => {
-        const listOfCategories = categories;
-        if(listOfCategories){
-            return listOfCategories.map(item => (
-                <option value={item.id}>{item.title}</option>
-            ))
-        }
+        return <Select styles={colourStyles} options={categories} placeholder={"Выберите категорию"}/>
     }
 
     const handleTitle = (event) => {
@@ -197,10 +218,7 @@ export default function EditStory() {
                     </div>
                     <div className="story-create-category-div input-blocks">
                         <label htmlFor="id_category" className="story-create-labels">Категория</label>
-                        <select name="category" required="" id="id_category" value={category} onChange={handleCategory}>
-                            <option defaultValue value="">Выберите категорию</option>
-                            {renderSelectItems()}
-                        </select>
+                        {renderSelectItems()}
                     </div>
                 </div>
                 <div className="story" style={{backgroundImage: `url(${image ? URL.createObjectURL(image) : wasImage ? wasImage : '/media/stories/standart.png'})`}}>

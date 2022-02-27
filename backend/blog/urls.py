@@ -19,5 +19,6 @@ urlpatterns = [
     path('story/search/<search_value>', StoryListBySearchView.as_view()),
     path('profile/edit/<int:id>', ProfileUpdateView.as_view()),
     path('profileStoryRelation/<int:user_id>/<int:story_id>', ProfileStoryRelationView.as_view()),
+    path('story/byBookmarks/<int:user_id>', StoryListByBookmarks.as_view()),
     path('profileStoryRelation/update/<int:user_id>/<int:story_id>', ProfileStoryRelationUpdateView.as_view()),
 ]

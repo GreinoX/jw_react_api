@@ -1,47 +1,54 @@
-import React, { Component } from 'react';
+import React, {useEffect, useState} from 'react';
 import SideBar from './Layout/SideBar';
 import Like from '../static/icons/minimalistic_like.svg';
 import View from '../static/icons/views.svg';
 import {Link} from 'react-router-dom';
-import {formatIntegers, imageForStory} from './utils';
-import SearchIcon from '../static/icons/search.svg';
-import Search from './Layout/Search'
+import {formatIntegers, imageForStory} from './utils'; 
+import Search from './Layout/Search';
 
-class MainContent extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-          stories: [],
-          categories: [],
-          placeholder: "",
-          isLoading: false,
-          searchText: ""
-        };
-        this.handleSearchText = this.handleSearchText.bind(this);
-      }
+export default function MainContent() {
+    const [stories, setStories] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [fetching, setFetching] = useState(true);
+    const [count, setCount] = useState(0)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try{
+                const response = await fetch(`http://localhost:8000/api/v1/?p=${page}&page_size=${6}`)
+                .then(res => res.json())
+                .then(data => {
+                    setStories( [...stories, ...data.results]);
+                    setIsLoading(true);
+                    setCount(data.count);
+                    setPage(prevState => prevState + 1)
+                }).finally(() => {
+                    setFetching(false);
+                })
+            }catch(e){
+                console.log(e)
+            }
+        }
+        fetchData()
+    }, [fetching])
 
 
-    async componentDidMount(){
-        try{
-            const stories = await fetch("http://localhost:8000/api/v1/").then(res => res.json());
-            const categories = await fetch("http://localhost:8000/api/v1/categories/").then(res => res.json());
-            this.setState({
-            stories,
-            categories,
-            isLoading: true
-            });
-        } catch(error){
-            console.log(error);
+    useEffect(() => {
+        document.addEventListener('scroll', scrollHanlder);
+        return function(){
+            document.removeEventListener('scroll', scrollHanlder);
+        }
+    })
+
+    const scrollHanlder = (e) => {
+        if(e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 100 && stories.length !== count){
+            setFetching(true); 
         }
     }
 
-    handleSearchText = (event) => {
-        this.setState({searchText: event.target.value})
-    }
-
-    renderItems = () => {
-        const listOfStories = this.state.stories;
-        
+    const renderItems = () => {
+        const listOfStories = stories;
         return listOfStories.map(item => (
             <div className="story" key={item.id} style={imageForStory(item.image)}>
                 <Link to={"/story/" + item.url}>
@@ -59,28 +66,24 @@ class MainContent extends Component {
                 <p className="story-slogan">{item.shortinfo}</p>
                 </div>
             </div>
-    ))};
+    ))}
 
-    render(){
-        return (
-        <> 
-        {this.state.isLoading && 
-        <>
-            <div className="stories-st-theme-div">
-                <div className="stories-theme-div">
-                    <h4 className="stories-theme">Новое</h4>
-                    <Search />
-                </div>
-                <div className="stories">
-                {this.renderItems()}
-                </div>
+  return (
+    <>
+    {isLoading && (
+    <>
+        <div className="stories-st-theme-div">
+            <div className="stories-theme-div">
+                <h4 className="stories-theme">Новое</h4>
+                <Search />
             </div>
-            <SideBar/>
-        </>
-        }
-        </>
-        )
-        }
+            <div className="stories">
+            {renderItems()}
+            </div>
+        </div>
+        <SideBar/>
+    </>
+    )}
+    </>
+  )
 }
-
-export default MainContent;

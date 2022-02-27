@@ -50,6 +50,7 @@ function Story() {
                         if(responseLiked.ok){
                             const dataLiked = await responseLiked.json();
                             setIsLiked(dataLiked.is_liked)
+                            setIsBookmark(dataLiked.is_bookmarks)
                         }
                     }catch(error){
                         console.log(error);
@@ -123,11 +124,31 @@ function Story() {
     }
 
     const handleBookmarkSubmit = (event) => {
-        if(isBookmark){
-            setIsBookmark(false);
-        }else{
-            setIsBookmark(true);
+        if(isLogin && jwtToken && profile){
+            const fetchData = async () => {
+                updateJWTToken();
+                try{
+                    const requestOptions = {
+                        method: "PATCH",
+                        headers: {
+                            'Authorization': `JWT ${jwtToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({is_bookmarks: isBookmark ? false : true})
+                    }
+                    const response = await fetch(`http://localhost:8000/api/v1/profileStoryRelation/update/${jwtDecode.user_id}/${post.id}`, requestOptions);
+                    if(response.ok){
+                        console.log(await response.json())
+                        setIsBookmark(isBookmark ? false : true)
+                        console.log("hi")
+                    }
+                }catch(error){
+                    console.log(error)
+                }
+            }
+        fetchData();
         }
+
     }
 
   return (

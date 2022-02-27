@@ -123,7 +123,7 @@ class ProfileStoryRelation(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name="Пользователь")
     story = models.ForeignKey(Story, on_delete=models.CASCADE, verbose_name="История")
     is_liked = models.BooleanField("Лайк", default=False)
-    in_bookmarks = models.BooleanField("В закладках", default=False)
+    is_bookmarks = models.BooleanField("В закладках", default=False)
     
     def __str__(self):
         return f'Profile: {self.user.username} {self.user.id} -> {self.story} {self.story.id}'
@@ -131,3 +131,4 @@ class ProfileStoryRelation(models.Model):
     class Meta:
         verbose_name = "Лайки и закладки"
         verbose_name_plural = "Лайки и закладки"
+

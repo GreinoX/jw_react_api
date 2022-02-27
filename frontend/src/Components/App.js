@@ -19,25 +19,25 @@ class App extends Component {
 
   render(){
     return (
-    <>
-    <Header />
-    <div className="main">
-      <Routes>
-        <Route path="/" element={<MainContent/>} exact />
-        <Route path="/quotes" element={<Stories/>} />
-        <Route path="/story/:url_id" element={<Story/>}/>
-        <Route path="/category/:url_id" element={<MainContentByCategory/>}/>
-        <Route path="/login/" element={<Authentication/>}/>
-        <Route path="/registration/" element={<Registration/>}/>
-        <Route path="/profile/:username" element={<Profile/>} />
-        <Route path="/story/create/" exact element={<CreateStory/>} />
-        <Route path="/profile/edit/" exact element={<EditProfile/>}/>
-        <Route path="/story/edit/:url_id" exact element={<EditStory/>}/>
-        <Route path="/search/:search_value" exact element={<MainContentBySearch/>} />
-      </Routes>
+    <div className="main-root">
+      <Header />
+      <div className="main">
+        <Routes>
+          <Route path="/" element={<MainContent/>} exact />
+          <Route path="/quotes" element={<Stories/>} />
+          <Route path="/story/:url_id" element={<Story/>}/>
+          <Route path="/category/:url_id" element={<MainContentByCategory/>}/>
+          <Route path="/login/" element={<Authentication/>}/>
+          <Route path="/registration/" element={<Registration/>}/>
+          <Route path="/profile/:username" element={<Profile/>} />
+          <Route path="/story/create/" exact element={<CreateStory/>} />
+          <Route path="/profile/edit/" exact element={<EditProfile/>}/>
+          <Route path="/story/edit/:url_id" exact element={<EditStory/>}/>
+          <Route path="/search/:search_value" exact element={<MainContentBySearch/>} />
+        </Routes>
+      </div>
+      <Footer />
     </div>
-    <Footer />
-    </>
     )
   }
 

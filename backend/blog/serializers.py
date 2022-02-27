@@ -70,7 +70,15 @@ class ProfileStoryRelationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProfileStoryRelation
-        fields = ("user", "story", "is_liked", )
+        fields = ("user", "story", "is_liked", "is_bookmarks")
+
+class ProfileStoryRelationBookmarksSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.all())
+    story = StoryListSerializer()
+
+    class Meta:
+        model = ProfileStoryRelation
+        fields = ("user", "story", "is_liked", "is_bookmarks")
 
 class StoryLikesSerializer(serializers.ModelSerializer):
 

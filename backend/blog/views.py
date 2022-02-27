@@ -4,12 +4,13 @@ from rest_framework.response import Response
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
-
+from .paginations import StoryListPagination
 from .models import Story, Category
 from .serializers import *
 
 
 class StoryListView(generics.ListAPIView):
+    pagination_class = StoryListPagination
     queryset = Story.objects.all()
     serializer_class = StoryListSerializer
     
@@ -113,4 +114,11 @@ class StoryListBySearchView(generics.ListAPIView):
     def get_queryset(self):
         filters = Q(title__icontains = self.kwargs['search_value']) | Q(text__icontains=self.kwargs['search_value'])
         return Story.objects.filter(filters)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
+class StoryListByBookmarks(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ProfileStoryRelationBookmarksSerializer
+
+    def get_queryset(self):
+        return ProfileStoryRelation.objects.filter(user=self.kwargs['user_id'], is_bookmarks=True)
+
