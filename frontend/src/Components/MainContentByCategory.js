@@ -9,32 +9,67 @@ import SideBar from './Layout/SideBar';
 
 function MainContentByCategory() {
     const {url_id} = useParams();
-    const [listOfPost, setListOfPost] = useState([]);
+    const [stories, setStories] = useState([]);
     const [category, setCategory] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [fetching, setFetching] = useState(true);
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        setPage(1);
+        setStories([]);
+        setCategory("");
+        setFetching(true);
+        setCount(0);
+    }, [url_id])
 
     useEffect(() => {
         const fetchData = async () => {
             try{
-                const response = await fetch(`http://localhost:8000/api/v1/category/${url_id}`).then(res => res.json());
-                if(response.length !== 0){
-                    setListOfPost(response);
-                    setCategory(response[0].category.title);
-                    setIsLoading(true);
-                }else{
-                    setListOfPost([]);
-                    setCategory("Напишите первую историю в этом жанре!");
-                    setIsLoading(true);
-                }
+                const response = await fetch(`http://localhost:8000/api/v1/category/${url_id}?p=${page}&page_size=6`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.count !== 0){
+                        if(page === 1){
+                            setCategory(data.results[0].category.title);
+                            document.title = `Просто Пиши | ${data.results[0].category.title}`;
+                        }
+                        setStories([...stories, ...data.results]);
+                        setCount(data.count);
+                        setPage(prevState => prevState + 1);
+                        setIsLoading(true);
+                    }else{
+                        setStories([]);
+                        setCategory("Никто еще не писал в таком жанре");
+                        setIsLoading(true);
+                        document.title = "Просто Пиши | Жанр пуст"
+                    }
+                }).finally(() => {
+                    setFetching(false);
+                })
             }catch(error){
                 console.log(error);
             }
         }
         fetchData();
-    }, [url_id]);
+    }, [fetching]);
+
+    useEffect(() => {
+        document.addEventListener('scroll', scrollHanlder);
+        return function(){
+            document.removeEventListener('scroll', scrollHanlder);
+        }
+    })
+
+    const scrollHanlder = (e) => {
+        if(e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 100 && stories.length !== count){
+            setFetching(true); 
+        }
+    }
 
     const renderItems = () => {
-        return listOfPost.map(item => (
+        return stories.map(item => (
             <div className="story" key={item.id} style={imageForStory(item.image)}>
                 <Link to={"/story/" + item.url}>
                 <div className="black"></div>
@@ -54,6 +89,8 @@ function MainContentByCategory() {
         ))
     };
 
+
+
   return (
     <>
     {isLoading && 
@@ -64,6 +101,22 @@ function MainContentByCategory() {
         </div>
         <div className="stories">
             {renderItems()}
+            {stories.length === 0 && (
+                <>
+                <div className="story">
+                    <div className="black" style={{background: "linear-gradient(180deg, rgba(12, 12, 14, 0.83) 0%, rgba(255, 255, 255, 0) 121%)", backgroundColor: "none"}}></div>
+                    <div className="story-title-div">
+                        <h3 className="story-title">В данном жанре пока что ничего нет</h3>
+                    </div>
+                </div>
+                <div className="story">
+                    <div className="black" style={{background: "linear-gradient(180deg, rgba(12, 12, 14, 0.83) 0%, rgba(255, 255, 255, 0) 121%)", opacity: "1"}}></div>
+                </div>
+                <div className="story">
+                    <div className="black" style={{background: "linear-gradient(180deg, rgba(12, 12, 14, 0.83) 0%, rgba(255, 255, 255, 0) 121%)", opacity: "1"}}></div>
+                </div>
+                </>
+            )}
         </div>
     </div>
     <SideBar/>

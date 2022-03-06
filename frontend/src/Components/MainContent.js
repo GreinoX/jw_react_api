@@ -14,6 +14,7 @@ export default function MainContent() {
     const [count, setCount] = useState(0)
 
     useEffect(() => {
+        document.title = "Просто Пиши"
         const fetchData = async () => {
             try{
                 const response = await fetch(`http://localhost:8000/api/v1/?p=${page}&page_size=${6}`)

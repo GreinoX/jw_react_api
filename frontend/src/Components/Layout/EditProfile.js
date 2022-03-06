@@ -1,8 +1,10 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {useNavigate} from 'react-router-dom';
 import jwt from 'jwt-decode';
-import { updateJWTToken } from '../utils';
+import { updateJWTToken, selectOptions } from '../utils';
 import PlusIcon from '../../static/icons/plus.svg';
+import Select from 'react-select';
+import { stylesForSelect } from '../../styles/styles';
 
 export default function EditProfile() {
   const [firstName, setFirstName] = useState("");
@@ -100,8 +102,8 @@ export default function EditProfile() {
       formData.append('profile_picture', "");
     }
     formData.append('status', status);
-    updateJWTToken();
     const fetchData = async () => {
+      updateJWTToken();
         const requestOptions = {
           method: 'PUT',
           headers: {
@@ -122,6 +124,10 @@ export default function EditProfile() {
         })
     }
     fetchData();
+  }
+
+  const renderSelectItems = () => {
+    return <Select value={selectOptions.find(elem => elem.value === status)} placeholder="Выберите статус" styles={stylesForSelect} options={selectOptions} onChange={elem => {setStatus(elem.value)}} />
   }
 
   return (
@@ -197,20 +203,9 @@ export default function EditProfile() {
                   <input type="file" id="id_profile_picture" className="story-create-image" onChange={handleImage} ref={imageRef} hidden/>
                   <br />
               </div>
-              <div className="story-create-slogan-div input-blocks">
+              <div className="story-create-category-div input-blocks">
                 <label htmlFor="id_status" className="story-create-labels">Статус</label>
-                <select id="id_category" value={status} onChange={handleStatus}>
-                  <option defaultValue value="">Выберите статус</option>
-
-                  <option value="reviewer">Критик</option>
-
-                  <option value="writer">Писатель</option>
-
-                  <option value="on_right_way">На пути истинном</option>
-
-                  <option value="junior_poet">Юный поэт</option>
-
-                </select>
+                {renderSelectItems()}
               </div>
             </div>
             <br />

@@ -63,7 +63,7 @@ function Registration() {
                     const responseStatus = response.status;
                     const result = await response.json();
                     if(responseStatus === 201){
-                        navigate("/");
+                        navigate("/login/");
                     }else{
                         setErrors(result.username || result.password || result.email);
                     }

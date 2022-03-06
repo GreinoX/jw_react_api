@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useParams, Link, useNavigate} from 'react-router-dom';
-import {formatIntegers, imageForStory} from '../utils';
+import {formatIntegers, imageForStory, updateJWTToken} from '../utils';
 import Like from '../../static/icons/minimalistic_like.svg';
 import View from '../../static/icons/views.svg';
 import EditIcon from '../../static/icons/edit.svg';
@@ -10,47 +10,155 @@ import jwt from 'jwt-decode';
 
 
 function Profile() {
+    const {username} = useParams();
     const [stories, setStories] = useState([]);
     const [profile, setProfile] = useState([]);
     const [bookmarksStories, setBookmarksStories] = useState([]);
-    const {username} = useParams();
     const [jwtDecode, setJwtDecode] = useState({});
+    const [isLoadingStories, setIsLoadingStories] = useState(false);
+    const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+    const [bookmarkSubmit, setBookmarkSubmit] = useState(false);
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(0);
+    const [fetching, setFetching] = useState(true);
     const jwtToken = localStorage.getItem('access');
     const navigate = useNavigate();
     const isLogin = localStorage.getItem('isLogin');
-    const [isLoading, setIsLoading] = useState(false);
-    const [bookmarkSubmit, setBookmarkSubmit] = useState(false);
+    const [bookmarkPage, setBookmarkPage] = useState(1);
+    const [bookmarkCount, setBookmarkCount] = useState(0);
+    const [bookmarkFetching, setBookmarkFetching] = useState(true);
+
+    useEffect(() => {
+        setStories([]);
+        setFetching(true);
+        setCount(0);
+        setPage(1); 
+    },[username])
+
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            try{
+                const response = await fetch(`http://localhost:8000/api/v1/profileData/${username}`)
+                .then(res => res.json())
+                .then(data => {
+                    setProfile(data);
+                    setIsLoadingProfile(true);
+                    document.title = `Просто Пиши | Автор ${data.username}`;
+                    if(isLogin && jwtToken){
+                        const jwtDecode = jwt(jwtToken);
+                        setJwtDecode(jwtDecode);
+                        if(jwtDecode.user_id === data.id){
+                            document.title = "Просто Пиши | Мой профиль"
+                        }
+                    }
+                })
+            }catch(e){
+                console.log(e)
+            }
+        }
+        fetchProfileData()
+    }, [username])
 
     useEffect(() => {
         const fetchData = async () => {
             try{
-                const responseProfile = await fetch(`http://localhost:8000/api/v1/profileData/${username}`);
-                const responseStories = await fetch(`http://localhost:8000/api/v1/profileStories/${username}`);
-                const profileStories = await responseStories.json();
-                const profileData = await responseProfile.json();
-                if(!responseProfile.ok){
-                    navigate('/');
-                }
-                setProfile(profileData);
-                setStories(profileStories);
-                setIsLoading(true);
-                document.title = `Просто Пиши | Профиль ${profileData.username}`;
-                if(isLogin){
-                    const jwtToken = jwt(localStorage.getItem('access'));
-                    setJwtDecode(jwtToken);
-                    if(jwtToken.user_id === profileData.id){
-                        document.title = "Просто Пиши | Личный Профиль"
+                const responseStories = await fetch(`http://localhost:8000/api/v1/profileStories/${username}?p=${page}&page_size=6`)
+                .then(res => res.json())
+                .then(data => {
+                    if(page === 1){
+                        setStories([...data.results])
+                    }else{
+                        setStories([...stories, ...data.results])
                     }
-                }
-            }catch(error){
-                console.log(error);
+                    setStories([...stories, ...data.results]);
+                    setCount(data.count);
+                    setIsLoadingStories(true);
+                    setPage(prevState => prevState + 1);
+                })
+                .finally(() => {
+                    setFetching(false);
+                })
+            }catch(e){
+                console.log(e);
             }
         }
         fetchData();
-    }, [username])
+    }, [fetching])
+
+
+    useEffect(() => {
+        if(bookmarkSubmit){
+            if(jwtToken && profile && isLogin){
+                const fetchData = async () => {
+                    updateJWTToken();
+                    try{
+                        const jwtDecode = jwt(jwtToken);
+                        const requestOptions = {
+                            method: "GET", 
+                            headers: {
+                                'Authorization': `JWT ${jwtToken}`,
+                                'Content-Type': 'application/json'
+                            }
+                        }
+                        const response = await fetch(`http://localhost:8000/api/v1/story/byBookmarks/${jwtDecode.user_id}?p=${bookmarkPage}`, requestOptions)
+                        .then(res => res.json())
+                        .then(data => {
+                            const result = data.results.map(elem => {
+                                return elem.story
+                            });
+                            setBookmarksStories([...bookmarksStories, ...result]);
+                            setBookmarkPage(prevState => prevState + 1);
+                            setBookmarkCount(data.count);
+                            console.log(data)
+                        }).finally(() => {
+                            setBookmarkFetching(false);
+                        })
+                    }catch(error){
+                        console.log(error)
+                    }
+                }
+                fetchData();
+            }
+        }
+    }, [bookmarkFetching, bookmarkSubmit])
+
+    useEffect(() => {
+        document.addEventListener('scroll', scrollHanlder);
+        return function(){
+            document.removeEventListener('scroll', scrollHanlder);
+        }
+    })
+
+    const scrollHanlder = (e) => {
+        if(e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 100 && stories.length !== count && !bookmarkSubmit){
+            setFetching(true); 
+        }
+        if(e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 100 && bookmarksStories.length !== bookmarkCount && bookmarkSubmit){
+            setBookmarkFetching(true);
+        }
+    }
 
     const renderItems = () => {
         const listOfStories = bookmarkSubmit ? bookmarksStories : stories;
+
+        if(listOfStories.length === 0){
+            return (
+                <>
+                <div className="story">
+                    <div className="black" style={{background: "linear-gradient(180deg, rgba(12, 12, 14, 0.83) 0%, rgba(255, 255, 255, 0) 121%)", backgroundColor: "none"}}></div>
+                    <div className="story-title-div">
+                        <h3 className="story-title">{bookmarkSubmit ? "Добавьте что-нибудь в избранное чтобы увидеть здесь" : "У вас тут как-то пустовато"}</h3>
+                    </div>
+                </div>
+                <div className="story">
+                    <div className="black" style={{background: "linear-gradient(180deg, rgba(12, 12, 14, 0.83) 0%, rgba(255, 255, 255, 0) 121%)", opacity: "1"}}></div>
+                </div>
+                <div className="story">
+                    <div className="black" style={{background: "linear-gradient(180deg, rgba(12, 12, 14, 0.83) 0%, rgba(255, 255, 255, 0) 121%)", opacity: "1"}}></div>
+                </div>
+                </>
+            )
+        }
 
         return listOfStories.map(item => (
             <div className="story" key={item.id} style={imageForStory(item.image)}>
@@ -75,45 +183,14 @@ function Profile() {
         event.preventDefault();
         localStorage.clear();
         navigate('/');
-        window.location.reload();
     }
 
     const handleBookmarkPage = (event) => {
-        if(jwtToken && profile && isLogin){
-            const fetchData = async () => {
-                try{
-                    const jwtDecode = jwt(jwtToken);
-                    const requestOptions = {
-                        method: "GET",
-                        headers: {
-                            'Authorization': `JWT ${jwtToken}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
-                    const response = await fetch(`http://localhost:8000/api/v1/story/byBookmarks/${jwtDecode.user_id}`, requestOptions)
-                    if(response.ok){
-                        const data = await response.json()
-                        if(data){
-                            setBookmarksStories(data.map(elem => {
-                                return elem.story
-                            }))
-                            setBookmarkSubmit(true);
-                        }
-                    }
-                }catch(error){
-                    console.log(error)
-                }
-            }
-        if(bookmarksStories.length !== 0){
-            setBookmarkSubmit(true)
-        }else{
-            fetchData()
-        }
-        }
+        setBookmarkSubmit(true);
     }
 
     const handleProfileStories = (event) => {
-        setBookmarkSubmit(false)
+        setBookmarkSubmit(false);
     }
 
     const profileActions = () => {
@@ -139,7 +216,7 @@ function Profile() {
 
   return (
   <>
-  {isLoading && 
+  {isLoadingStories && isLoadingProfile && 
    <>
     <div className="side-bar-profile-div">
         <div className="stories-theme-div">
@@ -164,7 +241,7 @@ function Profile() {
                     <div className="profile-mini-info-div">
                         <div className="profile-counters-div">
                             <p className="profile-count">
-                            {stories.length} <br/>
+                            {count} <br/>
                             Историй
                             </p>
                         </div>
@@ -185,13 +262,13 @@ function Profile() {
         <div className="stories-theme-div">
             <h4 className="stories-theme">{jwtDecode.user_id === profile.id ? (
                 <>
-                {bookmarkSubmit ? 'Избранное' : 'Ваши истории'}
+                {bookmarkSubmit ? 'Избранное' : 'Мои истории'}
                 </>
             ) : `Истории автора ${profile.username}`}</h4>
             {jwtDecode.user_id === profile.id && (
                 <>
                 <div className="profile-actions-stories">
-                    <p className="in-bookmarks" onClick={bookmarkSubmit ? handleProfileStories : handleBookmarkPage}>{bookmarkSubmit ? "Ваши истории" : "Избранное"}</p>
+                    <p className="in-bookmarks" onClick={bookmarkSubmit ? handleProfileStories : handleBookmarkPage}>{bookmarkSubmit ? "Мои истории" : "Избранное"}</p>
                 </div>
                 </>
             )}

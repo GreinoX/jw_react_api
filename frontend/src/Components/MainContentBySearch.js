@@ -11,16 +11,25 @@ export default function MainContentBySearch() {
     const {search_value} = useParams();
     const [searchText, setSearchText] = useState("");
     const [stories, setStories] = useState([]);
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(0);
+    const [fetching, setFetching] = useState(true);
 
     useEffect(() => {
         if(search_value.trim() !== ""){
+            document.title = "Просто Пиши | Поиск"
             const fetchData = async () => {
                 try{
-                    const response = await fetch(`http://localhost:8000/api/v1/story/search/${search_value}`)
+                    const response = await fetch(`http://localhost:8000/api/v1/story/search/${search_value}?p=${page}`)
                     .then(res => res.json())
                     .then(data => {
-                        setStories(data);
+                        setStories([...stories, ...data.results]);
                         setSearchText(search_value);
+                        setPage(prevState => prevState + 1);
+                        setCount(data.count);
+                        console.log(data)
+                    }).finally(() => {
+                        setFetching(false);
                     })
                 }catch(error){
                     console.log(error)
@@ -28,11 +37,25 @@ export default function MainContentBySearch() {
             }
             fetchData();
         }
-    }, [search_value])
+    }, [search_value, fetching])
 
     const handleSearchText = (event) => {
         setSearchText(event.target.value)
     }
+
+    useEffect(() => {
+        document.addEventListener('scroll', scrollHanlder);
+        return function(){
+            document.removeEventListener('scroll', scrollHanlder);
+        }
+    })
+
+    const scrollHanlder = (e) => {
+        if(e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 100 && stories.length !== count){
+            setFetching(true); 
+        }
+    }
+
 
     const renderItems = () => {
         const listOfPost = stories;

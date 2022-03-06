@@ -28,6 +28,7 @@ class StoryDetailView(generics.RetrieveAPIView):
     
 class StoryListByCategoryView(generics.ListAPIView):
     serializer_class = StoryListSerializer
+    pagination_class = StoryListPagination
     
     def get_queryset(self):
         return Story.objects.filter(category__url=self.kwargs['url'])
@@ -47,6 +48,7 @@ class ProfileForUpdateView(generics.RetrieveAPIView):
 
 class StoryListByProfileView(generics.ListAPIView):
     serializer_class = StoryListSerializer
+    pagination_class = StoryListPagination
 
     def get_queryset(self):
         return Story.objects.filter(creator__username=self.kwargs['username'])
@@ -110,6 +112,7 @@ class ProfileStoryRelationUpdateView(generics.UpdateAPIView):
 
 class StoryListBySearchView(generics.ListAPIView):
     serializer_class = StoryListSerializer
+    pagination_class = StoryListPagination
     
     def get_queryset(self):
         filters = Q(title__icontains = self.kwargs['search_value']) | Q(text__icontains=self.kwargs['search_value'])
@@ -118,6 +121,7 @@ class StoryListBySearchView(generics.ListAPIView):
 class StoryListByBookmarks(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileStoryRelationBookmarksSerializer
+    pagination_class = StoryListPagination
 
     def get_queryset(self):
         return ProfileStoryRelation.objects.filter(user=self.kwargs['user_id'], is_bookmarks=True)

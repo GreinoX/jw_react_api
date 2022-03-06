@@ -2,9 +2,13 @@ import React, {useEffect, useState, useRef} from 'react';
 import {useNavigate} from 'react-router-dom';
 import jwt from 'jwt-decode';
 import {getCookie} from '../utils';
-import { updateJWTToken, formatIntegers } from '../utils';
+import { updateJWTToken, formatIntegers, ckeditorConfig} from '../utils';
 import Like from '../../static/icons/minimalistic_like.svg';
 import View from '../../static/icons/views.svg';
+import Select from 'react-select';
+import { stylesForSelect } from '../../styles/styles';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 export default function CreateStory() {
     const isLogin = localStorage.getItem('isLogin');
@@ -22,16 +26,22 @@ export default function CreateStory() {
     const csrfToken = getCookie('csrftoken');
 
     useEffect(() => {
+        document.title = "Просто Пиши | Создание истории"
+    }, [])
+
+    useEffect(() => {
         if(!(isLogin && jwtToken)){
             navigate('/');
         }else{
             const fetchDataCats = async () => {
                 try{
                     const response = await fetch('http://localhost:8000/api/v1/categories/').then(res => res.json());
-                    setCategories(response);
+                    setCategories(response.map(elem => {
+                        return {value: elem.id, label: elem.title}
+                    }));
                     setCatTitles(response.map(elem => {
                         return elem.title
-                    }))
+                    }));
                 }catch(error){
                     console.log(error);
                 }
@@ -40,22 +50,21 @@ export default function CreateStory() {
         }
     }, [isLogin, jwtToken, navigate])
 
+
     const renderSelectItems = () => {
-        const listOfCategories = categories;
-        if(listOfCategories){
-            return listOfCategories.map(item => (
-                <option value={item.id}>{item.title}</option>
-            ))
-        }
+        return <Select styles={stylesForSelect} options={categories} placeholder={"Выберите категорию"} onChange={(elem) => {setCategory(elem.value)}} />
     }
+
 
     const handleTitle = (event) => {
         setTitle(event.target.value);
     }
 
+
     const handleShortInfo = (event) => {
         setShortInfo(event.target.value);
     }
+
 
     const handleImage = (event) => {
         if(event.target.files && event.target.files[0]){
@@ -63,24 +72,28 @@ export default function CreateStory() {
         }
     }
 
-    const handleCategory = (event) => {
-        setCategory(event.target.value);
-    }
 
     const handleText = (event) => {
         setText(event.target.value);
     }
+
 
     const handleRemoveImage = (event) => {
         setImage("");
         imageRef.current.value = "";
     }
 
+
+    useEffect(() => {
+        updateJWTToken();
+    })
+
+
     const handleSubmit = (event) => {
         event.preventDefault();
         if(title.trim() !== "" && shortInfo.trim() !== "" && text.trim() !== "" && category !== ""){
-            updateJWTToken();
             const fetchData = async () => {
+                updateJWTToken();
                 try{
                     const formData = new FormData();
                     const creator = jwt(jwtToken).user_id || null;
@@ -138,12 +151,16 @@ export default function CreateStory() {
                     <input type="text" name="shortinfo" className="story-create-input" maxLength="150" required="" id="id_shortinfo" onChange={handleShortInfo} value={shortInfo} />
                 </div>
             </div>
+            <br />
             <div class="story-create-text-div input-blocks">
                 <script src="/static/ckeditor/ckeditor-init.js" data-ckeditor-basepath="/static/ckeditor/ckeditor/" id="ckeditor-init-script"></script>
                 <script src="/static/ckeditor/ckeditor/ckeditor.js"></script>
                 <label for="id_text" class="story-create-labels">Содержание</label>
                 <div class="django-ckeditor-widget" data-field-id="id_text">
-                    <textarea name="text" id="" cols="108" rows="10" onChange={handleText} value={text}></textarea>
+                    <CKEditor editor={ClassicEditor} config={ckeditorConfig} onChange={(event, editor) => {
+                        setText(editor.data.get());
+                        console.log(text)
+                    }}/>
                 </div>
             </div>
             <br/>
@@ -156,13 +173,10 @@ export default function CreateStory() {
                         </div>
                         <input type="file" name="image" multiple="" className="story-create-image" ref={imageRef} required="" id="id_image" onChange={handleImage} hidden/>
                     </div>
-                <div className="story-create-category-div input-blocks">
-                    <label htmlFor="id_category" className="story-create-labels">Категория</label>
-                    <select name="category" required="" id="id_category" onChange={handleCategory}>
-                        <option defaultValue>Выберите категорию</option>
+                    <div className="story-create-category-div input-blocks">
+                        <label htmlFor="id_category" className="story-create-labels">Категория</label>
                         {renderSelectItems()}
-                    </select>
-                </div>
+                    </div>
             </div>
             <div className="story" style={{backgroundImage: `url(${image ? URL.createObjectURL(image) : '/media/stories/standart.png'})`}}>
                 <div className="black"></div>

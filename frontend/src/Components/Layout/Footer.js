@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 export default function Footer() {
   return (
@@ -15,7 +16,7 @@ export default function Footer() {
                 </div>
             </div>
             <div className="footer-bottom-div">
-                <p className="foundation">Создатели: <a href="/profile/GreinoX" className="gold-p">Прокофьев Егор</a>, <a href="/profile/m.poleshchikov" className="gold-p">Полещиков Михаил</a></p>
+                <p className="foundation">Создатели: <Link to="/profile/GreinoX" className="gold-p">Прокофьев Егор</Link>, <Link to="/profile/m.poleshchikov" className="gold-p">Полещиков Михаил</Link></p>
                 <div className="version-div">
                     <i>version 0.1</i><span className="gold-p">&nbsp;&#171;Buran&#187;</span>
                 </div>

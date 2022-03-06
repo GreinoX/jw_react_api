@@ -10,10 +10,11 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = "__all__" 
 
 class CreatorSerializer(serializers.ModelSerializer):
+    status = serializers.CharField(source="get_status_display")
     
     class Meta:
         model = Profile
-        fields = ("id", "username", )
+        fields = ("id", "username", "profile_picture", "status", "first_name", "last_name")
 
 
 class StoryListSerializer(serializers.ModelSerializer):
@@ -49,7 +50,7 @@ class StoryCreateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Story
-        fields = ('title', 'shortinfo', 'image', 'category', 'creator', 'url')
+        fields = ('title', 'shortinfo', "text", 'image', 'category', 'creator', 'url')
 
 class ProfileDetailSerializer(serializers.ModelSerializer):
     status = serializers.CharField(source='get_status_display')

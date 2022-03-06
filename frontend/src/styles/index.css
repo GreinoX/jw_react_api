@@ -5,6 +5,34 @@ html, body{
   overflow-x: hidden;
 }
 
+::-webkit-scrollbar{
+  background-color: #121214;
+  width: 15px;
+}
+
+::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, #1A1A1D 0%, #C98A49 157.63%);
+}
+
+.ck-editor__editable_inline{
+  min-height: 400px;
+  width: 820px;
+  font-size: 14px;
+  color: #A5A5A5;
+  background-color: #121214 !important;
+  outline: none;
+}
+
+.ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+  border-color: #121214 !important;
+}
+
+.ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused{
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
 #root{
   min-height: 100vh;
   padding: 0;
@@ -101,7 +129,7 @@ hr{
 }
 
 .main{
-  margin-top: 40px;
+  margin-top: 25px;
   display: flex;
   padding-bottom: 270px;
 }
@@ -160,7 +188,7 @@ hr{
 
 .stories-theme-div{
   position: relative;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
   display: flex;
   align-items: flex-end;
 }
@@ -470,6 +498,7 @@ hr{
 
 .story-header-title-div{
   z-index: 3;
+  display: flex;
 }
 
 .story-header-title{
@@ -590,6 +619,7 @@ hr{
   border: solid 1px #C98949;
   border-radius: 5px;
   cursor: pointer;
+  margin-right: 15px;
 }
 
 .bookmark img{
@@ -754,12 +784,17 @@ hr{
 
 /* LOGIN STYLE */
 .auth-div{
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
   align-items: center;
   align-content: center; 
-  justify-content: center; 
+  justify-content: center;
+  background-color: #1A1A1D;
+  z-index: 11;
   /* overflow: auto; */
 }
 
@@ -972,6 +1007,37 @@ hr{
   height: auto;
 }
 
+.profile-header{
+  display: flex;
+  align-items: center;
+}
+
+.profile-info-story{
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-username-story{
+  margin-left: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #eb9642;
+  text-align: left;
+}
+
+.profile-username-story:hover{
+  font-weight: 600;
+  color: #A5A5A5;
+}
+
+.profile-status-story{
+  font-size: 13px;
+  color: #A5A5A5;
+  margin-bottom: 0;
+  text-align: left;
+  margin-left: 10px;
+}
+
 .profile-header-div{
   margin-top: 15px;
 }
@@ -1073,6 +1139,7 @@ hr{
   width: 100%;
   display: flex;
   justify-content: center;
+  padding-top: auto;
 }
 
 .story-create-form{
@@ -1143,6 +1210,7 @@ hr{
 .story-create-image-div{
   width: 400px;
   height: 250px;
+  margin-right: 20px;
 }
 
 .actions-with-image{

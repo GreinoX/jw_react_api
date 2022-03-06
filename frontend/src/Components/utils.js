@@ -3,6 +3,13 @@ import {useLocation} from 'react-router-dom';
 import { useNavigate } from 'react-router';
 import jwt from 'jwt-decode';
 
+export const selectOptions = [
+    {value: 'reviewer', label: "Критик"},
+    {value: 'on_right_way', label: "На пути истинном"},
+    {value: 'writer', label: "Писатель"},
+    {value: 'junior_poet', label: 'Юный поэт'}
+]
+
 export const useScrollToTop = () => {
     const location = useLocation();
     useEffect(() => {
@@ -85,4 +92,9 @@ export const Logout = () => {
     const navigate = useNavigate();
     navigate('/');
     window.location.reload();
+}
+
+export const ckeditorConfig = {
+    toolbar: [ 'heading', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ],
+    language: "ru"
 }

@@ -1,11 +1,14 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import jwt from 'jwt-decode';
-import { formatIntegers, updateJWTToken } from '../utils';
+import { formatIntegers, updateJWTToken, ckeditorConfig } from '../utils';
 import Like from '../../static/icons/minimalistic_like.svg';
 import View from '../../static/icons/views.svg';
 import { useScrollToTop } from '../utils';
 import Select from 'react-select';
+import { stylesForSelect } from '../../styles/styles';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 export default function EditStory() {
     const {url_id} = useParams();
@@ -30,7 +33,6 @@ export default function EditStory() {
         if(url_id && profile && isLogin && jwtToken){
             const fetchData = async () => {
                 try{
-
                     const jwtDecode = jwt(jwtToken);
                     const response = await fetch(`http://localhost:8000/api/v1/story/${url_id}`)
                     .then(res => res.json())
@@ -42,7 +44,7 @@ export default function EditStory() {
                             setText(data.text || "");
                             setWasImage(data.image);
                             setCategory(data.category.id);
-                            setIsLoading(true);
+                            setIsLoading(true); 
                         }else{
                             navigate('/');
                         }
@@ -52,7 +54,7 @@ export default function EditStory() {
                     .then(res => res.json())
                     .then(categories => {
                         setCategories(categories.map(elem => {
-                            return {value: elem.value, label: elem.title}
+                            return {value: elem.id, label: elem.title}
                         }));
                         setCatTitles(categories.map(item => {
                            return item.title
@@ -74,31 +76,8 @@ export default function EditStory() {
         }
     }, [url_id])
 
-    const colourStyles = {
-        option: (provided, state) => ({
-            ...provided,
-            backgroundColor: state.isFocused ? "#09090A" : "#121214",
-            color: "#C98949"
-        }),
-        control: (provided, state) => ({
-            ...provided, 
-            backgroundColor: "#121214",
-            border: "none",
-            borderRadius: "5px"
-        }),
-        singleValue: (provided, state) => ({
-            ...provided, 
-            color:"#C98949",
-        }),
-        menuList: (provided, state) => ({
-            ...provided, 
-            backgroundColor:  "#121214",
-            borderRadius: "5px"
-        })
-    }
-
     const renderSelectItems = () => {
-        return <Select styles={colourStyles} options={categories} placeholder={"Выберите категорию"}/>
+        return <Select styles={stylesForSelect} value={categories.find(elem => elem.value === category)} options={categories} placeholder={"Выберите категорию"} onChange={(elem) => {setCategory(elem.value)}} />
     }
 
     const handleTitle = (event) => {
@@ -109,19 +88,12 @@ export default function EditStory() {
         setShortInfo(event.target.value);
     }
 
-    const handleText = (event) =>{
-        setText(event.target.value);
-        console.log(event.target.value)
-    }
-
     const handleImage = (event) => {
         setImage(event.target.files[0]);
     }
 
     const handleCategory = (event) => {
         setCategory(event.target.value);
-        console.log(event.target.value);
-        console.log(category)
     }
 
     const handleRemoveImage = (event) => {
@@ -143,7 +115,9 @@ export default function EditStory() {
             formData.append('title', title.trim());
             formData.append('shortinfo', shortInfo.trim());
             formData.append('text', text.trim());
-            formData.append('image', image);
+            if(!wasImage){
+                formData.append('image', image)
+            }
             formData.append('category', category);
             const fetchData = async () => {
                 updateJWTToken();
@@ -198,12 +172,15 @@ export default function EditStory() {
                         <input type="text" name="shortinfo" className="story-create-input" maxLength="150" required="" id="id_shortinfo" onChange={handleShortInfo} value={shortInfo} />
                     </div>
                 </div>
+                <br />
                 <div class="story-create-text-div input-blocks">
                     <script src="/static/ckeditor/ckeditor-init.js" data-ckeditor-basepath="/static/ckeditor/ckeditor/" id="ckeditor-init-script"></script>
                     <script src="/static/ckeditor/ckeditor/ckeditor.js"></script>
                     <label for="id_text" class="story-create-labels">Содержание</label>
                     <div class="django-ckeditor-widget" data-field-id="id_text">
-                        <textarea name="text" id="" cols="108" rows="10" onChange={handleText} value={text}></textarea>
+                    <CKEditor editor={ClassicEditor} config={ckeditorConfig} onChange={(event, editor) => {
+                        setText(editor.data.get());
+                    }} data={text}/>
                     </div>
                 </div>
                 <br/>
@@ -224,7 +201,7 @@ export default function EditStory() {
                 <div className="story" style={{backgroundImage: `url(${image ? URL.createObjectURL(image) : wasImage ? wasImage : '/media/stories/standart.png'})`}}>
                             <div className="black"></div>
                             <div className="story-category-div">
-                                <p className="story-category">{category.title ? category.title : catTitles[category - 1]}</p>
+                                <p className="story-category">{catTitles[category - 1]}</p>
                             </div>
                             <div className="story-rating-views-div">
                             <span className="story-rating"><img src={Like} alt="" className="story-rating-image"/> {formatIntegers(0)}</span>

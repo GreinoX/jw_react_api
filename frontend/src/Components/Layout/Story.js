@@ -10,6 +10,7 @@ import {Link} from 'react-router-dom';
 import SideBar from './SideBar';
 import { imageForStory, updateJWTToken, useScrollToTop } from '../utils';
 import jwt from 'jwt-decode';
+import parse from "html-react-parser";
 
 function Story() {
     const {url_id} = useParams();
@@ -35,6 +36,7 @@ function Story() {
                 setPost(response);
                 setPostLikes(response.rating);
                 setCategory(response.category);
+                console.log(response)
                 document.title = "Просто Пиши | " + response.title;
                 if(jwtToken && isLogin && profile){
                     try{
@@ -99,8 +101,8 @@ function Story() {
 
     const handleLikeSubmit = (event) => {
         if(isLogin && jwtDecode && profile){
-            updateJWTToken();
             const fetchData = async () => {
+                updateJWTToken();
                 try{
                     const requestOptions = {
                         method: "PUT",
@@ -172,8 +174,28 @@ function Story() {
                     </span>
                 </div>
                 <div className="story-header-title-div">
-                    <h3 className="story-header-title">{post.title}</h3>
-                    <p className="story-header-slogan">{post.shortinfo}</p>
+                    <div className="story-header-si-ti-div">
+                        <h3 className="story-header-title">{post.title}</h3>
+                        <p className="story-header-slogan">{post.shortinfo}</p>
+                    </div>
+                </div>
+            </div>
+            <div className="story-like-div">
+                <div className="like" onClick={handleLikeSubmit} style={isLiked ? {backgroundColor: "#C98949", width: "40px"} : {}}>
+                    <img src={LikeWhite} style={isLiked ? {marginRight: "0px"} : {}} alt="" />
+                    <span style={isLiked ? {position: "absolute", marginRight: "200px", opacity: "0"} : {}}>Понравилось</span>
+                </div>
+                <div className="bookmark" onClick={handleBookmarkSubmit} style={isBookmark ? {backgroundColor: "#C98949"} : {}}>
+                    <img src={isBookmark ? BookmarkFill : Bookmark} alt="" />
+                </div>
+                <div className="profile-header">
+                    <div className="header-profile-div">
+                        <img src={post.creator.profile_picture} className="header-profile-image" alt="" />
+                    </div>
+                    <div className="profile-info-story">
+                        <Link to={"/profile/" + post.creator.username} className="profile-username-story">{post.creator.first_name && post.creator.last_name ? `${post.creator.first_name} ${post.creator.last_name}` : `${post.creator.username}`}</Link>
+                        <p className="profile-status-story">{post.creator.status}</p>
+                    </div>
                 </div>
             </div>
                 {jwtDecode.user_id === post.creator.id && (
@@ -199,20 +221,11 @@ function Story() {
                         )}
                     </div>
                     </>
-                <br />
                 </div>
                 )}
-            <div className="story-like-div">
-                <div className="like" onClick={handleLikeSubmit} style={isLiked ? {backgroundColor: "#C98949", width: "40px"} : {}}>
-                    <img src={LikeWhite} style={isLiked ? {marginRight: "0px"} : {}} alt="" />
-                    <span style={isLiked ? {position: "absolute", marginRight: "200px", opacity: "0"} : {}}>Понравилось</span>
-                </div>
-                <div className="bookmark" onClick={handleBookmarkSubmit} style={isBookmark ? {backgroundColor: "#C98949"} : {}}>
-                    <img src={isBookmark ? BookmarkFill : Bookmark} alt="" />
-                </div>
-            </div>
+                <br />
             <div className="story-detail-text">
-                {post.text}
+                {parse(post.text)}
             </div>
         </div>
         <SideBar />
